@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🧹 KPS Services - Plateforme de Nettoyage Professionnel
 
 ![KPS Services](https://img.shields.io/badge/version-1.0.0-blue.svg)
@@ -298,3 +299,7 @@ Ce projet est sous licence ISC - voir le fichier LICENSE pour plus de détails.
 
 ⭐ N'oubliez pas de donner une étoile si ce projet vous aide !
 
+=======
+# kps-service
+site de nettoyage 
+>>>>>>> b50925823257c4bca71a3f3202a5a345391f6ba8

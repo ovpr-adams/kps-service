@@ -1,0 +1,50 @@
+# Dépendances
+node_modules/
+backend-api/node_modules/
+frontend/node_modules/
+
+# Variables d'environnement
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+backend-api/.env
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# MongoDB data
+mongodb-data/*
+!mongodb-data/.gitkeep
+
+# Build
+dist/
+build/
+frontend/dist/
+frontend/build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Tests
+coverage/
+
+# Temporaires
+.cache/
+.temp/
+
+

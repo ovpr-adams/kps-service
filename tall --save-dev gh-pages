@@ -1,0 +1,36 @@
+warning: in the working copy of 'frontend/src/App.jsx', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/frontend/src/App.jsx b/frontend/src/App.jsx[m
+[1mindex 599bebf..9a3358a 100644[m
+[1m--- a/frontend/src/App.jsx[m
+[1m+++ b/frontend/src/App.jsx[m
+[36m@@ -14,22 +14,13 @@[m [mimport Footer from './components/Footer'[m
+ [m
+ function App() {[m
+   useEffect(() => {[m
+[31m-    // Améliorer l'accessibilité en gérant le focus[m
+[31m-    const handleRouteChange = () => {[m
+[31m-      const mainContent = document.getElementById('main-content')[m
+[31m-      if (mainContent) {[m
+[31m-        mainContent.focus()[m
+[31m-      }[m
+[31m-    }[m
+[31m-[m
+[31m-    // Gestion du scroll vers le haut sur changement de route[m
+[32m+[m[32m    // Scroll en haut à chaque changement de route[m
+     window.scrollTo(0, 0)[m
+   }, [])[m
+ [m
+   return ([m
+     <Router>[m
+       <div className="min-h-screen bg-white flex flex-col font-sans antialiased">[m
+[31m-        {/* Skip Links pour l'accessibilité */}[m
+         <div className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-green-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">[m
+           <a href="#main-content" className="block underline hover:no-underline">Aller au contenu principal</a>[m
+           <a href="#footer" className="block underline hover:no-underline">Aller au pied de page</a>[m
+[36m@@ -57,4 +48,4 @@[m [mfunction App() {[m
+   )[m
+ }[m
+ [m
+[31m-export default App[m
+[32m+[m[32mexport default App[m
+\ No newline at end of file[m

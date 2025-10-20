@@ -10,26 +10,20 @@ import Contact from './pages/Contact'
 import Legal from './pages/Legal'
 import Privacy from './pages/Privacy'
 import Terms from './pages/Terms'
+import AdminLogin from './pages/AdminLogin'
+import AdminDashboard from './pages/AdminDashboard'
+import ProtectedRoute from './components/ProtectedRoute'
 import Footer from './components/Footer'
 
 function App() {
   useEffect(() => {
-    // Améliorer l'accessibilité en gérant le focus
-    const handleRouteChange = () => {
-      const mainContent = document.getElementById('main-content')
-      if (mainContent) {
-        mainContent.focus()
-      }
-    }
-
-    // Gestion du scroll vers le haut sur changement de route
+    // Scroll en haut à chaque changement de route
     window.scrollTo(0, 0)
   }, [])
 
   return (
     <Router>
       <div className="min-h-screen bg-white flex flex-col font-sans antialiased">
-        {/* Skip Links pour l'accessibilité */}
         <div className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-green-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">
           <a href="#main-content" className="block underline hover:no-underline">Aller au contenu principal</a>
           <a href="#footer" className="block underline hover:no-underline">Aller au pied de page</a>
@@ -48,6 +42,12 @@ function App() {
             <Route path="/legal" element={<Legal />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/dashboard" element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            } />
           </Routes>
         </main>
 

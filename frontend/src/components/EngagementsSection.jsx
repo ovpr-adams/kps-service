@@ -1,37 +1,65 @@
 import { motion } from 'framer-motion'
 import { CheckCircle, Leaf, Shield, Clock } from 'lucide-react'
+import { useState, useEffect } from 'react'
 
 const EngagementsSection = () => {
-  const engagements = [
-    {
-      id: 1,
-      icon: CheckCircle,
-      title: 'Qualité',
-      color: 'from-yellow-500 to-yellow-600',
-      bgColor: 'bg-yellow-500'
-    },
-    {
-      id: 2,
-      icon: Leaf,
-      title: 'Écologie',
-      color: 'from-green-500 to-green-600',
-      bgColor: 'bg-green-500'
-    },
-    {
-      id: 3,
-      icon: CheckCircle,
-      title: 'Sécurité',
-      color: 'from-yellow-500 to-yellow-600',
-      bgColor: 'bg-yellow-500'
-    },
-    {
-      id: 4,
-      icon: Clock,
-      title: 'Réactivité',
-      color: 'from-green-500 to-green-600',
-      bgColor: 'bg-green-500'
+  const [engagements, setEngagements] = useState([])
+
+  useEffect(() => {
+    const loadEngagements = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/engagements')
+        const data = await response.json()
+        if (response.ok && data.data) {
+          setEngagements(data.data)
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des engagements:', error)
+        // Fallback aux engagements par défaut
+        setEngagements([
+          {
+            _id: 1,
+            icon: 'CheckCircle',
+            title: 'Qualité',
+            color: 'from-yellow-500 to-yellow-600',
+            bgColor: 'bg-yellow-500'
+          },
+          {
+            _id: 2,
+            icon: 'Leaf',
+            title: 'Écologie',
+            color: 'from-green-500 to-green-600',
+            bgColor: 'bg-green-500'
+          },
+          {
+            _id: 3,
+            icon: 'CheckCircle',
+            title: 'Sécurité',
+            color: 'from-yellow-500 to-yellow-600',
+            bgColor: 'bg-yellow-500'
+          },
+          {
+            _id: 4,
+            icon: 'Clock',
+            title: 'Réactivité',
+            color: 'from-green-500 to-green-600',
+            bgColor: 'bg-green-500'
+          }
+        ])
+      }
     }
-  ]
+    loadEngagements()
+  }, [])
+
+  const getIconComponent = (iconName) => {
+    const icons = {
+      CheckCircle,
+      Leaf,
+      Shield,
+      Clock
+    }
+    return icons[iconName] || CheckCircle
+  }
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -84,20 +112,25 @@ const EngagementsSection = () => {
           viewport={{ once: true }}
         >
           {engagements.map((engagement) => {
-            const Icon = engagement.icon
+            const IconComponent = getIconComponent(engagement.icon)
             return (
               <motion.div
-                key={engagement.id}
+                key={engagement._id || engagement.id}
                 variants={itemVariants}
                 whileHover={{ y: -8, scale: 1.05 }}
                 className="text-center group cursor-pointer"
               >
                 <div className={`w-20 h-20 ${engagement.bgColor} rounded-full flex items-center justify-center mb-4 mx-auto group-hover:shadow-lg transition-all duration-300`}>
-                  <Icon className="w-10 h-10 text-white" />
+                  <IconComponent className="w-10 h-10 text-white" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 group-hover:text-green-600 transition-colors duration-300">
                   {engagement.title}
                 </h3>
+                {engagement.description && (
+                  <p className="text-sm text-gray-600 mt-2">
+                    {engagement.description}
+                  </p>
+                )}
               </motion.div>
             )
           })}

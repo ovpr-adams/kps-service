@@ -1,0 +1,22 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fond blanc -->
+  <rect width="200" height="200" fill="white"/>
+  
+  <!-- Cercle vert (tête) -->
+  <circle cx="60" cy="50" r="25" fill="#16a34a"/>
+  
+  <!-- Forme verte inclinée (bras/corps) -->
+  <path d="M45 75 L85 115 L75 125 L35 85 Z" fill="#16a34a"/>
+  
+  <!-- Triangle jaune (jambe) -->
+  <path d="M75 125 L85 155 L65 155 Z" fill="#fbbf24"/>
+  
+  <!-- Arc jaune (autre jambe) -->
+  <path d="M85 115 Q125 115 125 145 Q125 155 115 155 Q85 155 85 145 Z" fill="#fbbf24"/>
+  
+  <!-- Texte KPS SERVICES -->
+  <text x="100" y="180" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#16a34a" text-anchor="middle">KPS SERVICES</text>
+  
+  <!-- Tagline LE SERVICE AU PLURIEL -->
+  <text x="100" y="195" font-family="Arial, sans-serif" font-size="12" font-weight="normal" fill="#fbbf24" text-anchor="middle">LE SERVICE AU PLURIEL</text>
+</svg>

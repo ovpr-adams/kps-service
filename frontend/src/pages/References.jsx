@@ -1,9 +1,10 @@
 import { motion } from 'framer-motion'
 import { Star, MapPin, Building2 } from 'lucide-react'
 import Testimonials from '../components/Testimonials'
+import { useEffect, useState } from 'react'
 
 const References = () => {
-  const projects = [
+  const [projects, setProjects] = useState([
     {
       id: 1,
       title: 'Complexe industriel TechCorp',
@@ -30,13 +31,44 @@ const References = () => {
       description: 'Maintenance quotidienne des espaces communs d\'un centre commercial de 80 000 m², 7j/7.',
       image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80',
       results: ['Satisfaction client >95%', 'Réactivité d\'intervention', 'Gestion écologique']
+    },
+    {
+      id: 4,
+      title: 'Lycée Robert Doisneau',
+      category: 'Nettoyage éducatif',
+      location: 'Cormeilles-en-Parisis',
+      description: 'Nettoyage quotidien des espaces éducatifs et sanitaires d\'un établissement scolaire de 8 000 m².',
+      image: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80',
+      results: ['Environnement sain pour les élèves', 'Respect des normes sanitaires', 'Intervention hors heures scolaires']
+    },
+    {
+      id: 5,
+      title: 'Collège Fontaine',
+      category: 'Maintenance éducative',
+      location: 'Fontaine-sous-Jouy',
+      description: 'Entretien régulier des espaces communs et sanitaires d\'un collège de 5 500 m² avec produits écologiques.',
+      image: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80',
+      results: ['Produits écologiques utilisés', 'Satisfaction de l\'équipe pédagogique', 'Maintenance préventive']
     }
-  ]
+  ])
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/references')
+        const data = await res.json()
+        if (res.ok && Array.isArray(data.data)) {
+          setProjects(data.data)
+        }
+      } catch (_) {}
+    }
+    load()
+  }, [])
 
   const stats = [
     { number: '500+', label: 'Clients satisfaits' },
-    { number: '15+', label: 'Années d\'expérience' },
-    { number: '50+', label: 'Professionnels' },
+    { number: '22+', label: 'Années d\'expérience' },
+    { number: '35+', label: 'Professionnels' },
     { number: '100%', label: 'Taux de recommandation' }
   ]
 

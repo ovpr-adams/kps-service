@@ -1,0 +1,347 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Save, ArrowLeft, Plus, Trash2, Edit, Eye } from 'lucide-react';
+
+const AdminEngagementsEditor = () => {
+  const navigate = useNavigate();
+  const [engagements, setEngagements] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [message, setMessage] = useState('');
+  const [editingIndex, setEditingIndex] = useState(null);
+
+  useEffect(() => {
+    loadEngagements();
+  }, []);
+
+  const loadEngagements = async () => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch('http://localhost:5000/api/engagements', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setEngagements(data.data || []);
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des engagements:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    setMessage('');
+
+    try {
+      const token = localStorage.getItem('adminToken');
+      
+      // Sauvegarder chaque engagement
+      for (const engagement of engagements) {
+        if (engagement._id) {
+          // Mise à jour
+          await fetch(`http://localhost:5000/api/engagements/${engagement._id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(engagement)
+          });
+        } else {
+          // Création
+          await fetch('http://localhost:5000/api/engagements', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(engagement)
+          });
+        }
+      }
+
+      setMessage('Engagements sauvegardés avec succès !');
+      setTimeout(() => setMessage(''), 3000);
+      loadEngagements(); // Recharger les données
+    } catch (error) {
+      console.error('Erreur:', error);
+      setMessage('Erreur lors de la sauvegarde');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const addEngagement = () => {
+    const newEngagement = {
+      title: '',
+      icon: 'CheckCircle',
+      color: 'from-green-500 to-green-600',
+      bgColor: 'bg-green-500',
+      description: '',
+      order: engagements.length + 1,
+      isActive: true
+    };
+    setEngagements([...engagements, newEngagement]);
+    setEditingIndex(engagements.length);
+  };
+
+  const removeEngagement = async (index) => {
+    const engagement = engagements[index];
+    
+    if (engagement._id) {
+      try {
+        const token = localStorage.getItem('adminToken');
+        await fetch(`http://localhost:5000/api/engagements/${engagement._id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+      } catch (error) {
+        console.error('Erreur lors de la suppression:', error);
+      }
+    }
+    
+    setEngagements(engagements.filter((_, i) => i !== index));
+  };
+
+  const updateEngagement = (index, field, value) => {
+    const updatedEngagements = [...engagements];
+    updatedEngagements[index] = { ...updatedEngagements[index], [field]: value };
+    setEngagements(updatedEngagements);
+  };
+
+  const moveEngagement = (index, direction) => {
+    const newEngagements = [...engagements];
+    const newIndex = direction === 'up' ? index - 1 : index + 1;
+    
+    if (newIndex >= 0 && newIndex < newEngagements.length) {
+      [newEngagements[index], newEngagements[newIndex]] = [newEngagements[newIndex], newEngagements[index]];
+      // Mettre à jour l'ordre
+      newEngagements.forEach((engagement, i) => {
+        engagement.order = i + 1;
+      });
+      setEngagements(newEngagements);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Chargement...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between py-4">
+            <div className="flex items-center">
+              <button
+                onClick={() => navigate('/admin')}
+                className="mr-4 p-2 text-gray-400 hover:text-gray-600"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </button>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Éditeur Engagements</h1>
+                <p className="text-sm text-gray-500">Modifier les engagements de l'entreprise</p>
+              </div>
+            </div>
+            <button
+              onClick={handleSave}
+              disabled={isSaving}
+              className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+            >
+              <Save className="h-4 w-4 mr-2" />
+              {isSaving ? 'Sauvegarde...' : 'Sauvegarder'}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {message && (
+          <div className={`mb-6 p-4 rounded-lg ${
+            message.includes('succès') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
+          }`}>
+            {message}
+          </div>
+        )}
+
+        <div className="space-y-6">
+          {/* Actions */}
+          <div className="flex justify-between items-center">
+            <h2 className="text-lg font-semibold text-gray-900">Engagements</h2>
+            <button
+              onClick={addEngagement}
+              className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Ajouter un engagement
+            </button>
+          </div>
+
+          {/* Liste des engagements */}
+          <div className="space-y-4">
+            {engagements.map((engagement, index) => (
+              <div key={index} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-3">
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${engagement.bgColor}`}>
+                      <span className="text-white font-bold text-lg">
+                        {engagement.title.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                    <div>
+                      <h3 className="font-medium text-gray-900">{engagement.title || 'Nouvel engagement'}</h3>
+                      <p className="text-sm text-gray-500">Ordre: {engagement.order}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => setEditingIndex(editingIndex === index ? null : index)}
+                      className="p-2 text-gray-400 hover:text-gray-600"
+                    >
+                      <Edit className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() => removeEngagement(index)}
+                      className="p-2 text-red-400 hover:text-red-600"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+
+                {editingIndex === index && (
+                  <div className="space-y-4 pt-4 border-t border-gray-200">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Titre
+                        </label>
+                        <input
+                          type="text"
+                          value={engagement.title}
+                          onChange={(e) => updateEngagement(index, 'title', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Icône
+                        </label>
+                        <input
+                          type="text"
+                          value={engagement.icon}
+                          onChange={(e) => updateEngagement(index, 'icon', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Couleur (gradient)
+                        </label>
+                        <input
+                          type="text"
+                          value={engagement.color}
+                          onChange={(e) => updateEngagement(index, 'color', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                          placeholder="from-green-500 to-green-600"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Couleur de fond
+                        </label>
+                        <input
+                          type="text"
+                          value={engagement.bgColor}
+                          onChange={(e) => updateEngagement(index, 'bgColor', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                          placeholder="bg-green-500"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Description
+                      </label>
+                      <textarea
+                        value={engagement.description}
+                        onChange={(e) => updateEngagement(index, 'description', e.target.value)}
+                        rows={3}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <input
+                          type="checkbox"
+                          id={`active-${index}`}
+                          checked={engagement.isActive}
+                          onChange={(e) => updateEngagement(index, 'isActive', e.target.checked)}
+                          className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                        />
+                        <label htmlFor={`active-${index}`} className="ml-2 text-sm text-gray-700">
+                          Actif
+                        </label>
+                      </div>
+
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => moveEngagement(index, 'up')}
+                          disabled={index === 0}
+                          className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50"
+                        >
+                          ↑
+                        </button>
+                        <button
+                          onClick={() => moveEngagement(index, 'down')}
+                          disabled={index === engagements.length - 1}
+                          className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50"
+                        >
+                          ↓
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {engagements.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-gray-500 mb-4">Aucun engagement configuré</p>
+              <button
+                onClick={addEngagement}
+                className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 mx-auto"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Ajouter le premier engagement
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AdminEngagementsEditor;

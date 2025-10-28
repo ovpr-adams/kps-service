@@ -60,20 +60,33 @@ const AdminDashboard = () => {
 
       if (quotesRes.ok) {
         const quotesData = await quotesRes.json()
-        setQuotes(quotesData)
-        setStats(prev => ({ ...prev, totalQuotes: quotesData.length }))
+        console.log('quotes data:', quotesData)
+        // Vérifier si c'est un tableau ou extraire le tableau de la réponse
+        const quotesArray = Array.isArray(quotesData) ? quotesData : (quotesData.data || [])
+        setQuotes(quotesArray)
+        setStats(prev => ({ ...prev, totalQuotes: quotesArray.length }))
+      } else {
+        console.error('Erreur quotes:', quotesRes.status, await quotesRes.text())
       }
 
       if (contactsRes.ok) {
         const contactsData = await contactsRes.json()
-        setContacts(contactsData)
-        setStats(prev => ({ ...prev, totalContacts: contactsData.length }))
+        console.log('contacts data:', contactsData)
+        const contactsArray = Array.isArray(contactsData) ? contactsData : (contactsData.data || [])
+        setContacts(contactsArray)
+        setStats(prev => ({ ...prev, totalContacts: contactsArray.length }))
+      } else {
+        console.error('Erreur contacts:', contactsRes.status, await contactsRes.text())
       }
 
       if (servicesRes.ok) {
         const servicesData = await servicesRes.json()
-        setServices(servicesData)
-        setStats(prev => ({ ...prev, totalServices: servicesData.length }))
+        console.log('services data:', servicesData)
+        const servicesArray = Array.isArray(servicesData) ? servicesData : (servicesData.data || [])
+        setServices(servicesArray)
+        setStats(prev => ({ ...prev, totalServices: servicesArray.length }))
+      } else {
+        console.error('Erreur services:', servicesRes.status, await servicesRes.text())
       }
 
     } catch (error) {
@@ -153,7 +166,8 @@ const AdminDashboard = () => {
               { id: 'overview', label: 'Vue d\'ensemble', icon: BarChart3 },
               { id: 'quotes', label: 'Devis', icon: FileText },
               { id: 'contacts', label: 'Messages', icon: MessageSquare },
-              { id: 'services', label: 'Services', icon: Settings }
+              { id: 'services', label: 'Services', icon: Settings },
+              { id: 'content', label: 'Contenu', icon: Edit }
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -227,6 +241,94 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
+              {/* Actions rapides */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+                <div className="p-6 border-b border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-900">Actions rapides</h3>
+                </div>
+                <div className="p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <button
+                      onClick={() => navigate('/admin/pages')}
+                      className="flex items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
+                    >
+                      <div className="p-2 bg-green-100 rounded-lg">
+                        <FileText className="h-6 w-6 text-green-600" />
+                      </div>
+                      <div className="ml-3 text-left">
+                        <p className="font-medium text-gray-900">Éditeur de pages</p>
+                        <p className="text-sm text-gray-600">Modifier le contenu du site</p>
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() => navigate('/admin/services')}
+                      className="flex items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                    >
+                      <div className="p-2 bg-blue-100 rounded-lg">
+                        <Settings className="h-6 w-6 text-blue-600" />
+                      </div>
+                      <div className="ml-3 text-left">
+                        <p className="font-medium text-gray-900">Gérer les services</p>
+                        <p className="text-sm text-gray-600">Ajouter/modifier des services</p>
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() => navigate('/admin/hero')}
+                      className="flex items-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
+                    >
+                      <div className="p-2 bg-purple-100 rounded-lg">
+                        <Edit className="h-6 w-6 text-purple-600" />
+                      </div>
+                      <div className="ml-3 text-left">
+                        <p className="font-medium text-gray-900">Éditeur Hero</p>
+                        <p className="text-sm text-gray-600">Modifier la page d'accueil</p>
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() => navigate('/admin/engagements')}
+                      className="flex items-center p-4 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors"
+                    >
+                      <div className="p-2 bg-yellow-100 rounded-lg">
+                        <CheckCircle className="h-6 w-6 text-yellow-600" />
+                      </div>
+                      <div className="ml-3 text-left">
+                        <p className="font-medium text-gray-900">Engagements</p>
+                        <p className="text-sm text-gray-600">Modifier les engagements</p>
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() => navigate('/admin/about')}
+                      className="flex items-center p-4 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors"
+                    >
+                      <div className="p-2 bg-indigo-100 rounded-lg">
+                        <Users className="h-6 w-6 text-indigo-600" />
+                      </div>
+                      <div className="ml-3 text-left">
+                        <p className="font-medium text-gray-900">À propos</p>
+                        <p className="text-sm text-gray-600">Modifier les sections About</p>
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() => navigate('/admin/quotes')}
+                      className="flex items-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
+                    >
+                      <div className="p-2 bg-purple-100 rounded-lg">
+                        <FileText className="h-6 w-6 text-purple-600" />
+                      </div>
+                      <div className="ml-3 text-left">
+                        <p className="font-medium text-gray-900">Gérer les devis</p>
+                        <p className="text-sm text-gray-600">Voir et traiter les demandes</p>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
               {/* Activité récente */}
               <div className="bg-white rounded-xl shadow-sm border border-gray-200">
                 <div className="p-6 border-b border-gray-200">
@@ -234,7 +336,7 @@ const AdminDashboard = () => {
                 </div>
                 <div className="p-6">
                   <div className="space-y-4">
-                    {quotes.slice(0, 5).map((quote) => (
+                    {Array.isArray(quotes) && quotes.slice(0, 5).map((quote) => (
                       <div key={quote._id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                         <div>
                           <p className="font-medium text-gray-900">{quote.company}</p>
@@ -380,6 +482,96 @@ const AdminDashboard = () => {
                     </div>
                   ))}
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* Content Tab */}
+          {activeTab === 'content' && (
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">Gestion du Contenu</h2>
+                <p className="text-gray-600 mt-2">Modifier le contenu des différentes sections du site</p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <button
+                  onClick={() => navigate('/admin/hero')}
+                  className="flex items-center p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl hover:from-purple-100 hover:to-purple-200 transition-all duration-200 border border-purple-200"
+                >
+                  <div className="p-3 bg-purple-100 rounded-lg mr-4">
+                    <Edit className="h-6 w-6 text-purple-600" />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="font-semibold text-gray-900">Page d'Accueil</h3>
+                    <p className="text-sm text-gray-600">Titre, sous-titre, CTA, services</p>
+                  </div>
+                </button>
+
+                <button
+                  onClick={() => navigate('/admin/engagements')}
+                  className="flex items-center p-6 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl hover:from-yellow-100 hover:to-yellow-200 transition-all duration-200 border border-yellow-200"
+                >
+                  <div className="p-3 bg-yellow-100 rounded-lg mr-4">
+                    <CheckCircle className="h-6 w-6 text-yellow-600" />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="font-semibold text-gray-900">Engagements</h3>
+                    <p className="text-sm text-gray-600">Qualité, Écologie, Sécurité, Réactivité</p>
+                  </div>
+                </button>
+
+                <button
+                  onClick={() => navigate('/admin/about')}
+                  className="flex items-center p-6 bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl hover:from-indigo-100 hover:to-indigo-200 transition-all duration-200 border border-indigo-200"
+                >
+                  <div className="p-3 bg-indigo-100 rounded-lg mr-4">
+                    <Users className="h-6 w-6 text-indigo-600" />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="font-semibold text-gray-900">À Propos</h3>
+                    <p className="text-sm text-gray-600">Histoire, Équipe, Valeurs</p>
+                  </div>
+                </button>
+
+                <button
+                  onClick={() => navigate('/admin/pages')}
+                  className="flex items-center p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-xl hover:from-green-100 hover:to-green-200 transition-all duration-200 border border-green-200"
+                >
+                  <div className="p-3 bg-green-100 rounded-lg mr-4">
+                    <FileText className="h-6 w-6 text-green-600" />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="font-semibold text-gray-900">Pages</h3>
+                    <p className="text-sm text-gray-600">Contenu des pages statiques</p>
+                  </div>
+                </button>
+
+                <button
+                  onClick={() => navigate('/admin/settings')}
+                  className="flex items-center p-6 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl hover:from-gray-100 hover:to-gray-200 transition-all duration-200 border border-gray-200"
+                >
+                  <div className="p-3 bg-gray-100 rounded-lg mr-4">
+                    <Settings className="h-6 w-6 text-gray-600" />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="font-semibold text-gray-900">Paramètres</h3>
+                    <p className="text-sm text-gray-600">Téléphone, horaires, zones</p>
+                  </div>
+                </button>
+
+                <button
+                  onClick={() => navigate('/admin/references')}
+                  className="flex items-center p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl hover:from-blue-100 hover:to-blue-200 transition-all duration-200 border border-blue-200"
+                >
+                  <div className="p-3 bg-blue-100 rounded-lg mr-4">
+                    <Award className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="font-semibold text-gray-900">Références</h3>
+                    <p className="text-sm text-gray-600">Clients et projets</p>
+                  </div>
+                </button>
               </div>
             </div>
           )}

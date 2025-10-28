@@ -26,6 +26,7 @@ const createAdmin = async () => {
       name: 'Administrateur KPS',
       email: adminEmail,
       password: adminPassword,
+      isAdmin: true,
       role: 'admin'
     });
 

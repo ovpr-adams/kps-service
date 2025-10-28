@@ -1,30 +1,61 @@
 import { motion } from 'framer-motion'
 import { Users, Award, Target, Heart } from 'lucide-react'
+import { useState, useEffect } from 'react'
 
 const About = () => {
-  const sections = [
-    {
-      id: 'histoire',
-      title: 'Notre Histoire',
-      icon: Award,
-      content: 'Fondée en 2010, KPS Services est née de la passion de ses fondateurs pour l\'excellence dans le domaine du nettoyage professionnel. Ce qui a commencé comme une petite entreprise familiale est aujourd\'hui une référence dans le secteur, avec plus de 500 clients satisfaits à travers la région parisienne.',
-      stats: '15+ années d\'expérience'
-    },
-    {
-      id: 'equipe',
-      title: 'Notre Équipe',
-      icon: Users,
-      content: 'Notre équipe est composée de professionnels expérimentés, formés aux dernières techniques de nettoyage et aux normes de sécurité les plus strictes. Chaque membre partage notre engagement pour la qualité et la satisfaction client.',
-      stats: '50+ professionnels qualifiés'
-    },
-    {
-      id: 'valeurs',
-      title: 'Nos Valeurs',
-      icon: Heart,
-      content: 'L\'intégrité, le respect et l\'excellence guident chacune de nos actions. Nous croyons en des relations durables avec nos clients et nos partenaires, fondées sur la confiance mutuelle et le professionnalisme.',
-      stats: '100% satisfaction client'
+  const [sections, setSections] = useState([])
+
+  useEffect(() => {
+    const loadSections = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/about-sections')
+        const data = await response.json()
+        if (response.ok && data.data) {
+          setSections(data.data)
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des sections About:', error)
+        // Fallback aux sections par défaut
+        setSections([
+          {
+            _id: 'histoire',
+            sectionId: 'histoire',
+            title: 'Notre Histoire',
+            icon: 'Award',
+            content: 'Fondée en 2002, KPS Services est née de la passion de ses fondateurs pour l\'excellence dans le domaine du nettoyage professionnel. Ce qui a commencé comme une petite entreprise familiale est aujourd\'hui une référence dans le secteur, avec plus de 500 clients satisfaits à travers la région parisienne.',
+            stats: '22+ années d\'expérience'
+          },
+          {
+            _id: 'equipe',
+            sectionId: 'equipe',
+            title: 'Notre Équipe',
+            icon: 'Users',
+            content: 'Notre équipe est composée de professionnels expérimentés, formés aux dernières techniques de nettoyage et aux normes de sécurité les plus strictes. Chaque membre partage notre engagement pour la qualité et la satisfaction client.',
+            stats: '+35 professionnels qualifiés'
+          },
+          {
+            _id: 'valeurs',
+            sectionId: 'valeurs',
+            title: 'Nos Valeurs',
+            icon: 'Heart',
+            content: 'L\'intégrité, le respect et l\'excellence guident chacune de nos actions. Nous croyons en des relations durables avec nos clients et nos partenaires, fondées sur la confiance mutuelle et le professionnalisme.',
+            stats: '100% satisfaction client'
+          }
+        ])
+      }
     }
-  ]
+    loadSections()
+  }, [])
+
+  const getIconComponent = (iconName) => {
+    const icons = {
+      Award,
+      Users,
+      Heart,
+      Target
+    }
+    return icons[iconName] || Award
+  }
 
   return (
     <div className="pt-16">
@@ -52,10 +83,10 @@ const About = () => {
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {sections.map((section, index) => {
-            const Icon = section.icon
+            const IconComponent = getIconComponent(section.icon)
             return (
               <motion.div
-                key={section.id}
+                key={section._id || section.id}
                 className={`mb-20 ${index % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -67,7 +98,7 @@ const About = () => {
                   <div className="flex-1">
                     <div className="flex items-center mb-6">
                       <div className="w-16 h-16 bg-primary/10 rounded-lg flex items-center justify-center mr-4">
-                        <Icon className="w-8 h-8 text-primary" />
+                        <IconComponent className="w-8 h-8 text-primary" />
                       </div>
                       <div>
                         <h2 className="text-2xl font-bold text-secondary">

@@ -12,6 +12,10 @@ import Privacy from './pages/Privacy'
 import Terms from './pages/Terms'
 import AdminLogin from './pages/AdminLogin'
 import AdminDashboard from './pages/AdminDashboard'
+import AdminPageEditor from './pages/AdminPageEditor'
+import AdminHeroEditor from './pages/AdminHeroEditor'
+import AdminEngagementsEditor from './pages/AdminEngagementsEditor'
+import AdminAboutEditor from './pages/AdminAboutEditor'
 import ProtectedRoute from './components/ProtectedRoute'
 import Footer from './components/Footer'
 
@@ -46,6 +50,26 @@ function App() {
             <Route path="/admin/dashboard" element={
               <ProtectedRoute>
                 <AdminDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/pages" element={
+              <ProtectedRoute>
+                <AdminPageEditor />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/hero" element={
+              <ProtectedRoute>
+                <AdminHeroEditor />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/engagements" element={
+              <ProtectedRoute>
+                <AdminEngagementsEditor />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/about" element={
+              <ProtectedRoute>
+                <AdminAboutEditor />
               </ProtectedRoute>
             } />
           </Routes>

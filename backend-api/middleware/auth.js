@@ -36,7 +36,7 @@ export const authenticate = async (req, res, next) => {
 
 // Middleware pour vérifier le rôle admin
 export const requireAdmin = (req, res, next) => {
-  if (req.user && req.user.role === 'admin') {
+  if (req.user && req.user.isAdmin === true) {
     next();
   } else {
     res.status(403).json({
@@ -48,4 +48,7 @@ export const requireAdmin = (req, res, next) => {
 
 // Middleware combiné : authentification + admin
 export const authenticateAdmin = [authenticate, requireAdmin];
+
+// Alias pour compatibilité
+export const authenticateToken = authenticate;
 

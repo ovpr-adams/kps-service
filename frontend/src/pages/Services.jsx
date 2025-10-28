@@ -75,8 +75,8 @@ const Services = () => {
         },
         {
           src: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-          title: 'Audit et Conformité',
-          description: 'Évaluation complète de vos besoins et mise en conformité réglementaire.'
+          title: 'Nettoyage après Chantier',
+          description: 'Nettoyage complet après travaux ou dégâts pour remettre en état vos espaces.'
         }
       ],
       sectors: [
@@ -85,7 +85,8 @@ const Services = () => {
         'Métallurgie et fabrication mécanique',
         'Pétrochimie et énergie',
         'Transport et logistique',
-        'Sites hospitaliers et pharmaceutiques'
+        'Sites hospitaliers et pharmaceutiques',
+        'Nettoyage de chantier'
       ]
     },
     {

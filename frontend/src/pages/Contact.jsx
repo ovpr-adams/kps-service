@@ -2,8 +2,10 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle } from 'lucide-react'
 import Map from '../components/Map'
+import { useSettings } from '../context/SettingsContext'
 
 const Contact = () => {
+  const { settings } = useSettings()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -12,6 +14,8 @@ const Contact = () => {
     message: ''
   })
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState('')
 
   const handleInputChange = (e) => {
     setFormData({
@@ -20,12 +24,41 @@ const Contact = () => {
     })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Simulate form submission
-    setTimeout(() => {
-      setIsSubmitted(true)
-    }, 1000)
+    setIsLoading(true)
+    setError('')
+
+    try {
+      const response = await fetch('http://localhost:5000/api/contacts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      })
+
+      const result = await response.json()
+
+      if (response.ok) {
+        setIsSubmitted(true)
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          subject: '',
+          message: ''
+        })
+      } else {
+        setError(result.message || 'Erreur lors de l\'envoi du message')
+      }
+    } catch (err) {
+      setError('Erreur de connexion. Veuillez réessayer.')
+      console.error('Erreur:', err)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   if (isSubmitted) {
@@ -111,8 +144,8 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-secondary mb-2">Téléphone</h3>
-                    <p className="text-gray-600">01 23 45 67 89</p>
-                    <p className="text-sm text-gray-500">Lundi au vendredi, 8h-18h</p>
+                    <p className="text-gray-600">{settings?.phone || '+33652323256'}</p>
+                    <p className="text-sm text-gray-500">{settings?.businessHoursText || '7h00-19h30'}</p>
                   </div>
                 </div>
 
@@ -121,9 +154,26 @@ const Contact = () => {
                     <Mail className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-secondary mb-2">Email</h3>
-                    <p className="text-gray-600">contact@kps-services.fr</p>
-                    <p className="text-sm text-gray-500">Réponse sous 24h garantie</p>
+                    <h3 className="text-xl font-bold text-secondary mb-2">Emails</h3>
+                    <div className="space-y-1">
+                      <p className="text-gray-600">
+                        <a href={`mailto:${(settings?.publicEmails || ['contact@kpsservices.fr'])[0]}`} className="hover:text-primary transition-colors">{(settings?.publicEmails || ['contact@kpsservices.fr'])[0]}</a>
+                        <span className="text-sm text-gray-500 ml-2">- Contact général</span>
+                      </p>
+                      <p className="text-gray-600">
+                        <a href="mailto:alexandre@kpsservices.fr" className="hover:text-primary transition-colors">alexandre@kpsservices.fr</a>
+                        <span className="text-sm text-gray-500 ml-2">- Direction</span>
+                      </p>
+                      <p className="text-gray-600">
+                        <a href="mailto:commercial@kpsservices.fr" className="hover:text-primary transition-colors">commercial@kpsservices.fr</a>
+                        <span className="text-sm text-gray-500 ml-2">- Commercial</span>
+                      </p>
+                      <p className="text-gray-600">
+                        <a href="mailto:kps@kpsservices.fr" className="hover:text-primary transition-colors">kps@kpsservices.fr</a>
+                        <span className="text-sm text-gray-500 ml-2">- Support</span>
+                      </p>
+                    </div>
+                    <p className="text-sm text-gray-500 mt-2">Réponse sous 24h garantie</p>
                   </div>
                 </div>
 
@@ -134,8 +184,8 @@ const Contact = () => {
                   <div>
                     <h3 className="text-xl font-bold text-secondary mb-2">Horaires</h3>
                     <div className="text-gray-600">
-                      <p>Lundi - Vendredi: 8h00 - 18h00</p>
-                      <p>Samedi: 9h00 - 12h00</p>
+                      <p>Lundi - Vendredi: 7h00 - 19h30</p>
+                      <p>Samedi: 8h00 - 12h00</p>
                       <p>Dimanche: Fermé</p>
                     </div>
                   </div>
@@ -168,6 +218,12 @@ const Contact = () => {
                 </h2>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Affichage des erreurs */}
+                  {error && (
+                    <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                      {error}
+                    </div>
+                  )}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -250,10 +306,20 @@ const Contact = () => {
 
                   <button
                     type="submit"
-                    className="w-full bg-primary text-secondary py-4 rounded-lg font-semibold text-lg hover:bg-primary/90 transition-colors duration-200 flex items-center justify-center"
+                    disabled={isLoading}
+                    className="w-full bg-primary text-secondary py-4 rounded-lg font-semibold text-lg hover:bg-primary/90 transition-colors duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Send className="w-5 h-5 mr-2" />
-                    Envoyer le message
+                    {isLoading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                        Envoi en cours...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-5 h-5 mr-2" />
+                        Envoyer le message
+                      </>
+                    )}
                   </button>
                 </form>
               </div>

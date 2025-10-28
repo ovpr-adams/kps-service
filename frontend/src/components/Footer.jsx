@@ -1,8 +1,11 @@
 import { Link } from 'react-router-dom'
 import { Phone, Mail, MapPin, Clock, Facebook, Linkedin, Twitter } from 'lucide-react'
+import Logo from './Logo'
+import { useSettings } from '../context/SettingsContext'
 
 const Footer = () => {
   const currentYear = new Date().getFullYear()
+  const { settings } = useSettings()
 
   const services = [
     { name: 'Nettoyage industriel', href: '/services#industriel' },
@@ -54,17 +57,9 @@ const Footer = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-12 mb-12">
           {/* Company Info & Logo */}
           <div className="xl:col-span-1 lg:col-span-2">
-            <Link to="/" className="inline-flex items-center group mb-6" aria-label="Accueil - KPS Services">
-              <div className="w-16 h-16 bg-gradient-to-br from-green-600 to-green-700 flex items-center justify-center mr-4 rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300">
-                <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                </svg>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-3xl font-bold text-white group-hover:text-green-400 transition-colors duration-300">KPS</span>
-                <span className="text-base font-semibold text-green-400 tracking-wider">SERVICES</span>
-              </div>
-            </Link>
+            <div className="mb-6">
+              <Logo size="large" variant="white" showTagline={true} />
+            </div>
 
             <p className="text-gray-300 text-lg leading-relaxed mb-8 max-w-md">
               L'expertise du nettoyage professionnel au service de vos espaces. Nous intervenons en Île-de-France pour tous vos besoins de nettoyage industriel, entretien de bureaux et lavage de vitres.
@@ -74,19 +69,19 @@ const Footer = () => {
             <div className="space-y-4 mb-8">
               <div className="flex items-center space-x-3 text-gray-300">
                 <Phone size={20} className="text-green-400 flex-shrink-0" />
-                <span className="font-medium">01 23 45 67 89</span>
+                <span className="font-medium">{settings?.phone || '+33652323256'}</span>
               </div>
               <div className="flex items-center space-x-3 text-gray-300">
                 <Mail size={20} className="text-green-400 flex-shrink-0" />
-                <span className="font-medium">contact@kps-services.fr</span>
+                <a href={`mailto:${settings?.publicEmails?.[0] || 'contact@kpsservices.fr'}`} className="font-medium hover:text-green-400 transition-colors">{settings?.publicEmails?.[0] || 'contact@kpsservices.fr'}</a>
               </div>
               <div className="flex items-center space-x-3 text-gray-300">
                 <MapPin size={20} className="text-green-400 flex-shrink-0" />
-                <span className="font-medium">Île-de-France & environs</span>
+                <span className="font-medium">{(settings?.serviceAreas || ['Île-de-France','Nantes','Rouen']).join(', ')}</span>
               </div>
               <div className="flex items-center space-x-3 text-gray-300">
                 <Clock size={20} className="text-green-400 flex-shrink-0" />
-                <span className="font-medium">Lun-Ven: 8h-18h</span>
+                <span className="font-medium">{settings?.businessHoursText || '7h00-19h30'}</span>
               </div>
             </div>
 

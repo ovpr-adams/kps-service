@@ -3,15 +3,17 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "homepage": "https://ovpr-adams.github.io/kps-service/",
+  "homepage": "https://ovpr-adams.github.io/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "deploy:user": "gh-pages -d dist -r https://github.com/ovpr-adams/ovpr-adams.github.io.git -b main"
   },
   "dependencies": {
+    "@uiw/react-md-editor": "^4.0.8",
     "framer-motion": "^12.23.24",
     "lucide-react": "^0.546.0",
     "react": "^19.2.0",

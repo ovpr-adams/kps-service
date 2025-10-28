@@ -2,16 +2,35 @@ import Contact from '../models/Contact.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { sendSuccess, sendError, sendCreated, sendNotFound } from '../utils/responseHelpers.js';
 import { getPaginationParams, sendPaginatedResponse } from '../utils/paginationHelpers.js';
+import { sendContactEmail } from '../utils/emailService.js';
 
 // Créer un nouveau message de contact
 export const createContact = asyncHandler(async (req, res) => {
   const contact = new Contact(req.body);
   await contact.save();
   
-  // TODO: Envoyer un email de confirmation au client
-  // TODO: Notifier l'équipe KPS Services
-  
-  sendCreated(res, 'Message envoyé avec succès', contact);
+  try {
+    // Envoyer un e-mail aux destinataires configurés
+    const emailResult = await sendContactEmail(contact.toObject());
+    
+    console.log(`✅ E-mail envoyé pour le contact ${contact._id}:`, emailResult.messageId);
+    
+    sendCreated(res, 'Message envoyé avec succès', {
+      ...contact.toObject(),
+      emailSent: true,
+      emailMessageId: emailResult.messageId
+    });
+    
+  } catch (emailError) {
+    console.error('❌ Erreur lors de l\'envoi de l\'e-mail:', emailError.message);
+    
+    // Le message est sauvegardé même si l'e-mail échoue
+    sendCreated(res, 'Message sauvegardé (e-mail non envoyé)', {
+      ...contact.toObject(),
+      emailSent: false,
+      emailError: emailError.message
+    });
+  }
 });
 
 // Récupérer tous les messages (admin)

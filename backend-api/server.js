@@ -10,6 +10,12 @@ import authRoutes from './routes/authRoutes.js';
 import quoteRoutes from './routes/quoteRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
 import serviceRoutes from './routes/serviceRoutes.js';
+import pagesRoutes from './routes/pagesRoutes.js';
+import settingsRoutes from './routes/settingsRoutes.js';
+import referenceRoutes from './routes/referenceRoutes.js';
+import heroRoutes from './routes/heroRoutes.js';
+import engagementRoutes from './routes/engagementRoutes.js';
+import aboutSectionRoutes from './routes/aboutSectionRoutes.js';
 
 // Import utilities
 import { errorHandler } from './utils/asyncHandler.js';
@@ -49,7 +55,8 @@ app.get('/', (req, res) => {
       auth: '/api/auth',
       quotes: '/api/quotes',
       contacts: '/api/contacts',
-      services: '/api/services'
+      services: '/api/services',
+      pages: '/api/pages'
     }
   });
 });
@@ -58,6 +65,12 @@ app.use('/api/auth', authRoutes);
 app.use('/api/quotes', quoteRoutes);
 app.use('/api/contacts', contactRoutes);
 app.use('/api/services', serviceRoutes);
+app.use('/api/pages', pagesRoutes);
+app.use('/api/settings', settingsRoutes);
+app.use('/api/references', referenceRoutes);
+app.use('/api/hero', heroRoutes);
+app.use('/api/engagements', engagementRoutes);
+app.use('/api/about-sections', aboutSectionRoutes);
 
 // Gestion des erreurs 404
 app.use((req, res) => {

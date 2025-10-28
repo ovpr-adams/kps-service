@@ -10,7 +10,8 @@
     "test": "node test-api.js",
     "test:prod": "node test-api.js --url https://your-production-url.com",
     "test:local": "node test-api.js --url http://localhost:5000",
-    "create-admin": "node scripts/createAdmin.js"
+    "create-admin": "node scripts/createAdmin.js",
+    "init-pages": "node scripts/initPages.js"
   },
   "keywords": [
     "kps",

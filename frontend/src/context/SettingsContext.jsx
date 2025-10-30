@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react'
+import { API_URLS, getPublicHeaders } from '../config/api'
 
 const SettingsContext = createContext(null)
 
@@ -10,7 +11,9 @@ export const SettingsProvider = ({ children }) => {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/settings')
+        const res = await fetch(API_URLS.SETTINGS, {
+          headers: getPublicHeaders()
+        })
         const data = await res.json()
         if (res.ok) {
           setSettings(data.data)

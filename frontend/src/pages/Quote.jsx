@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { CheckCircle, Calculator, Phone, Mail } from 'lucide-react'
+import { API_URLS, getPublicHeaders } from '../config/api'
 
 const Quote = () => {
   const [formData, setFormData] = useState({
@@ -17,6 +18,8 @@ const Quote = () => {
 
   const [currentStep, setCurrentStep] = useState(1)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState('')
 
   const handleInputChange = (e) => {
     setFormData({
@@ -25,12 +28,30 @@ const Quote = () => {
     })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Simulate form submission
-    setTimeout(() => {
-      setIsSubmitted(true)
-    }, 1000)
+    setIsSubmitting(true)
+    setSubmitError('')
+    
+    try {
+      const response = await fetch(API_URLS.QUOTES, {
+        method: 'POST',
+        headers: getPublicHeaders(),
+        body: JSON.stringify(formData)
+      })
+      
+      if (response.ok) {
+        setIsSubmitted(true)
+      } else {
+        const errorData = await response.json()
+        setSubmitError(errorData.message || 'Erreur lors de l\'envoi de la demande')
+      }
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi:', error)
+      setSubmitError('Erreur de connexion. Veuillez réessayer.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const nextStep = () => {
@@ -367,19 +388,38 @@ const Quote = () => {
                   </div>
                 </div>
 
+                {/* Affichage des erreurs */}
+                {submitError && (
+                  <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-red-600 text-sm">{submitError}</p>
+                  </div>
+                )}
+
                 <div className="flex justify-between">
                   <button
                     type="button"
                     onClick={prevStep}
-                    className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors duration-200"
+                    disabled={isSubmitting}
+                    className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Précédent
                   </button>
                   <button
                     type="submit"
-                    className="bg-primary text-secondary px-6 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors duration-200"
+                    disabled={isSubmitting}
+                    className="bg-primary text-secondary px-6 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
                   >
-                    Envoyer la demande
+                    {isSubmitting ? (
+                      <>
+                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Envoi en cours...
+                      </>
+                    ) : (
+                      'Envoyer la demande'
+                    )}
                   </button>
                 </div>
               </motion.div>

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, Lock, Mail, Shield, AlertCircle } from 'lucide-react'
+import { API_URLS, getPublicHeaders } from '../config/api'
 
 const AdminLogin = () => {
   const [formData, setFormData] = useState({
@@ -28,7 +29,7 @@ const AdminLogin = () => {
     setError('')
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
+      const response = await fetch(API_URLS.AUTH_LOGIN, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

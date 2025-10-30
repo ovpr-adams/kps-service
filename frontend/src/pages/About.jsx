@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Users, Award, Target, Heart } from 'lucide-react'
 import { useState, useEffect } from 'react'
+import { API_URLS, getPublicHeaders } from '../config/api'
 
 const About = () => {
   const [sections, setSections] = useState([])
@@ -8,7 +9,9 @@ const About = () => {
   useEffect(() => {
     const loadSections = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/about-sections')
+        const response = await fetch(API_URLS.ABOUT_SECTIONS, {
+          headers: getPublicHeaders()
+        })
         const data = await response.json()
         if (response.ok && data.data) {
           setSections(data.data)

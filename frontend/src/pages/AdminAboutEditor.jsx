@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Save, ArrowLeft, Plus, Trash2, Edit, Eye } from 'lucide-react';
+import { API_URLS, getAuthHeaders } from '../config/api';
 
 const AdminAboutEditor = () => {
   const navigate = useNavigate();
@@ -17,8 +18,8 @@ const AdminAboutEditor = () => {
   const loadSections = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('http://localhost:5000/api/about-sections', {
-        headers: { 'Authorization': `Bearer ${token}` }
+      const response = await fetch(API_URLS.ABOUT_SECTIONS, {
+        headers: getAuthHeaders()
       });
       
       if (response.ok) {
@@ -43,22 +44,16 @@ const AdminAboutEditor = () => {
       for (const section of sections) {
         if (section._id) {
           // Mise à jour
-          await fetch(`http://localhost:5000/api/about-sections/${section._id}`, {
+          await fetch(`${API_URLS.ABOUT_SECTIONS}/${section._id}`, {
             method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
+            headers: getAuthHeaders(),
             body: JSON.stringify(section)
           });
         } else {
           // Création
-          await fetch('http://localhost:5000/api/about-sections', {
+          await fetch(API_URLS.ABOUT_SECTIONS, {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
+            headers: getAuthHeaders(),
             body: JSON.stringify(section)
           });
         }
@@ -96,9 +91,9 @@ const AdminAboutEditor = () => {
     if (section._id) {
       try {
         const token = localStorage.getItem('adminToken');
-        await fetch(`http://localhost:5000/api/about-sections/${section._id}`, {
+        await fetch(`${API_URLS.ABOUT_SECTIONS}/${section._id}`, {
           method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${token}` }
+          headers: getAuthHeaders()
         });
       } catch (error) {
         console.error('Erreur lors de la suppression:', error);

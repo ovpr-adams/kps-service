@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { Building2, Sparkles, Phone, Mail } from 'lucide-react'
 import { useState, useEffect } from 'react'
+import { API_URLS, getPublicHeaders } from '../config/api'
 
 const Hero = () => {
   const [heroData, setHeroData] = useState({
@@ -20,7 +21,9 @@ const Hero = () => {
   useEffect(() => {
     const loadHeroData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/hero')
+        const response = await fetch(API_URLS.HERO, {
+          headers: getPublicHeaders()
+        })
         const data = await response.json()
         if (response.ok && data.data) {
           setHeroData(data.data)

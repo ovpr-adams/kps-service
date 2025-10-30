@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { CheckCircle, Leaf, Shield, Clock } from 'lucide-react'
 import { useState, useEffect } from 'react'
+import { API_URLS, getPublicHeaders } from '../config/api'
 
 const EngagementsSection = () => {
   const [engagements, setEngagements] = useState([])
@@ -8,7 +9,9 @@ const EngagementsSection = () => {
   useEffect(() => {
     const loadEngagements = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/engagements')
+        const response = await fetch(API_URLS.ENGAGEMENTS, {
+          headers: getPublicHeaders()
+        })
         const data = await response.json()
         if (response.ok && data.data) {
           setEngagements(data.data)

@@ -16,6 +16,9 @@ import AdminPageEditor from './pages/AdminPageEditor'
 import AdminHeroEditor from './pages/AdminHeroEditor'
 import AdminEngagementsEditor from './pages/AdminEngagementsEditor'
 import AdminAboutEditor from './pages/AdminAboutEditor'
+import AdminServicesEditor from './pages/AdminServicesEditor'
+import AdminSettingsEditor from './pages/AdminSettingsEditor'
+import AdminStatsEditor from './pages/AdminStatsEditor'
 import ProtectedRoute from './components/ProtectedRoute'
 import Footer from './components/Footer'
 
@@ -70,6 +73,21 @@ function App() {
             <Route path="/admin/about" element={
               <ProtectedRoute>
                 <AdminAboutEditor />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/services" element={
+              <ProtectedRoute>
+                <AdminServicesEditor />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/settings" element={
+              <ProtectedRoute>
+                <AdminSettingsEditor />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/stats" element={
+              <ProtectedRoute>
+                <AdminStatsEditor />
               </ProtectedRoute>
             } />
           </Routes>

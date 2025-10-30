@@ -128,3 +128,10 @@ export const duplicatePage = asyncHandler(async (req, res) => {
   sendCreated(res, 'Page dupliquée avec succès', newPage);
 });
 
+
+
+
+
+
+
+

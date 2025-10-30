@@ -55,3 +55,10 @@ const Page = mongoose.model('Page', pageSchema);
 
 export default Page;
 
+
+
+
+
+
+
+

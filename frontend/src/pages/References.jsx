@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { Star, MapPin, Building2 } from 'lucide-react'
 import Testimonials from '../components/Testimonials'
 import { useEffect, useState } from 'react'
+import { API_URLS, getPublicHeaders } from '../config/api'
 
 const References = () => {
   const [projects, setProjects] = useState([
@@ -55,7 +56,9 @@ const References = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/references')
+        const res = await fetch(API_URLS.REFERENCES, {
+          headers: getPublicHeaders()
+        })
         const data = await res.json()
         if (res.ok && Array.isArray(data.data)) {
           setProjects(data.data)

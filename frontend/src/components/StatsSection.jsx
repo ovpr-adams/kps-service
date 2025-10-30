@@ -1,8 +1,15 @@
 import { motion } from 'framer-motion'
-import { TrendingUp, Users, Award, MapPin } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { TrendingUp, Users, Award, MapPin, Loader2, AlertCircle } from 'lucide-react'
+import { API_URLS, getPublicHeaders } from '../config/api'
 
 const StatsSection = () => {
-  const stats = [
+  const [stats, setStats] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  // Données de fallback en cas d'erreur
+  const fallbackStats = [
     {
       id: 1,
       icon: Users,
@@ -37,6 +44,60 @@ const StatsSection = () => {
     }
   ]
 
+  // Icônes mapping
+  const iconMap = {
+    'Users': Users,
+    'Award': Award,
+    'TrendingUp': TrendingUp,
+    'MapPin': MapPin
+  }
+
+  // Couleurs mapping
+  const colorMap = {
+    0: 'from-blue-500 to-blue-600',
+    1: 'from-primary-500 to-primary-600',
+    2: 'from-green-500 to-green-600',
+    3: 'from-purple-500 to-purple-600'
+  }
+
+  useEffect(() => {
+    loadStats()
+  }, [])
+
+  const loadStats = async () => {
+    try {
+      const response = await fetch(API_URLS.STATS, {
+        headers: getPublicHeaders()
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        const statsData = data.data || data
+        
+        // Transformer les données de l'API en format compatible
+        const transformedStats = statsData.map((stat, index) => ({
+          id: stat._id || index,
+          icon: iconMap[stat.icon] || Users,
+          number: stat.value + (stat.unit || ''),
+          label: stat.title,
+          description: `Statistique mise à jour automatiquement`,
+          color: colorMap[index % 4] || 'from-gray-500 to-gray-600'
+        }))
+        
+        setStats(transformedStats)
+      } else {
+        console.error('Erreur lors du chargement des statistiques')
+        setStats(fallbackStats)
+      }
+    } catch (error) {
+      console.error('Erreur de connexion:', error)
+      setError('Erreur de chargement des statistiques')
+      setStats(fallbackStats)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -62,6 +123,19 @@ const StatsSection = () => {
     }
   }
 
+  if (isLoading) {
+    return (
+      <section className="py-20 bg-gradient-to-br from-secondary-50 to-primary-50 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="text-center">
+            <Loader2 className="h-12 w-12 animate-spin text-green-600 mx-auto mb-4" />
+            <p className="text-lg text-secondary-600">Chargement des statistiques...</p>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
   return (
     <section className="py-20 bg-gradient-to-br from-secondary-50 to-primary-50 relative overflow-hidden">
       {/* Background Elements */}
@@ -84,6 +158,12 @@ const StatsSection = () => {
           <p className="text-lg text-secondary-600 max-w-2xl mx-auto">
             Découvrez pourquoi KPS Services est le partenaire de confiance de centaines d'entreprises
           </p>
+          {error && (
+            <div className="mt-4 flex items-center justify-center text-orange-600">
+              <AlertCircle className="h-5 w-5 mr-2" />
+              <span className="text-sm">{error}</span>
+            </div>
+          )}
         </motion.div>
 
         <motion.div

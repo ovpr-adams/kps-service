@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Save, ArrowLeft, Plus, Trash2, Edit, Eye } from 'lucide-react';
+import { API_URLS, getAuthHeaders } from '../config/api';
 
 const AdminEngagementsEditor = () => {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ const AdminEngagementsEditor = () => {
   const loadEngagements = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('http://localhost:5000/api/engagements', {
+      const response = await fetch(API_URLS.ENGAGEMENTS, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
@@ -43,22 +44,16 @@ const AdminEngagementsEditor = () => {
       for (const engagement of engagements) {
         if (engagement._id) {
           // Mise à jour
-          await fetch(`http://localhost:5000/api/engagements/${engagement._id}`, {
+          await fetch(`${API_URLS.ENGAGEMENTS}/${engagement._id}`, {
             method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
+            headers: getAuthHeaders(),
             body: JSON.stringify(engagement)
           });
         } else {
           // Création
-          await fetch('http://localhost:5000/api/engagements', {
+          await fetch(API_URLS.ENGAGEMENTS, {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
+            headers: getAuthHeaders(),
             body: JSON.stringify(engagement)
           });
         }
@@ -95,9 +90,9 @@ const AdminEngagementsEditor = () => {
     if (engagement._id) {
       try {
         const token = localStorage.getItem('adminToken');
-        await fetch(`http://localhost:5000/api/engagements/${engagement._id}`, {
+        await fetch(`${API_URLS.ENGAGEMENTS}/${engagement._id}`, {
           method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${token}` }
+          headers: getAuthHeaders()
         });
       } catch (error) {
         console.error('Erreur lors de la suppression:', error);

@@ -16,6 +16,7 @@ import referenceRoutes from './routes/referenceRoutes.js';
 import heroRoutes from './routes/heroRoutes.js';
 import engagementRoutes from './routes/engagementRoutes.js';
 import aboutSectionRoutes from './routes/aboutSectionRoutes.js';
+import statsRoutes from './routes/statsRoutes.js';
 
 // Import utilities
 import { errorHandler } from './utils/asyncHandler.js';
@@ -24,7 +25,7 @@ import { errorHandler } from './utils/asyncHandler.js';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 // Middleware
 app.use(helmet()); // Sécurité des headers HTTP
@@ -56,7 +57,13 @@ app.get('/', (req, res) => {
       quotes: '/api/quotes',
       contacts: '/api/contacts',
       services: '/api/services',
-      pages: '/api/pages'
+      pages: '/api/pages',
+      settings: '/api/settings',
+      references: '/api/references',
+      hero: '/api/hero',
+      engagements: '/api/engagements',
+      aboutSections: '/api/about-sections',
+      stats: '/api/stats'
     }
   });
 });
@@ -71,6 +78,7 @@ app.use('/api/references', referenceRoutes);
 app.use('/api/hero', heroRoutes);
 app.use('/api/engagements', engagementRoutes);
 app.use('/api/about-sections', aboutSectionRoutes);
+app.use('/api/stats', statsRoutes);
 
 // Gestion des erreurs 404
 app.use((req, res) => {

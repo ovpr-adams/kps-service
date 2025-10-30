@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import MDEditor from '@uiw/react-md-editor';
 import { useNavigate } from 'react-router-dom';
+import { API_URLS, getAuthHeaders } from '../config/api';
 
 const AdminPageEditor = () => {
   const navigate = useNavigate();
@@ -39,8 +40,8 @@ const AdminPageEditor = () => {
   const loadPages = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('http://localhost:5000/api/pages', {
-        headers: { 'Authorization': `Bearer ${token}` }
+      const response = await fetch(API_URLS.PAGES, {
+        headers: getAuthHeaders()
       });
       
       if (response.ok) {
@@ -56,8 +57,8 @@ const AdminPageEditor = () => {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`http://localhost:5000/api/pages/${slug}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+      const response = await fetch(`${API_URLS.PAGES}/${slug}`, {
+        headers: getAuthHeaders()
       });
       
       if (response.ok) {
@@ -94,12 +95,9 @@ const AdminPageEditor = () => {
     
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`http://localhost:5000/api/pages/${selectedPage}`, {
+      const response = await fetch(`${API_URLS.PAGES}/${selectedPage}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify(pageData)
       });
       
@@ -328,4 +326,5 @@ const AdminPageEditor = () => {
 };
 
 export default AdminPageEditor;
+
 

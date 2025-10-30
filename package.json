@@ -1,0 +1,35 @@
+{
+  "name": "kps-services",
+  "version": "1.0.0",
+  "description": "Site web KPS Services - Nettoyage professionnel",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend-api && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend-api && npm ci --production",
+    "start": "cd backend-api && npm start",
+    "install:all": "npm install && cd backend-api && npm install && cd ../frontend && npm install",
+    "deploy:build": "scripts/build-production.bat",
+    "deploy:build:unix": "scripts/build-production.sh"
+  },
+  "keywords": [
+    "nettoyage",
+    "professionnel",
+    "kps-services",
+    "react",
+    "nodejs",
+    "mongodb"
+  ],
+  "author": "KPS Services",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}

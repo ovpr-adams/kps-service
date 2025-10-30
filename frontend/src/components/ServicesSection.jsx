@@ -1,8 +1,13 @@
 import { motion } from 'framer-motion'
 import { Building2, Sparkles, Home, CheckCircle } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
+import { API_URLS, getPublicHeaders } from '../config/api'
 
 const ServicesSection = () => {
-  const services = [
+  const [services, setServices] = useState([])
+
+  // Fallback local si l'API n'est pas disponible
+  const fallbackServices = useMemo(() => ([
     {
       id: 1,
       icon: Building2,
@@ -51,7 +56,39 @@ const ServicesSection = () => {
       bgColor: 'bg-green-50',
       hoverColor: 'hover:border-green-200'
     }
-  ]
+  ]), [])
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await fetch(API_URLS.SERVICES, { headers: getPublicHeaders() })
+        const data = await res.json()
+        if (res.ok && Array.isArray(data.data)) {
+          // Adapter les services de l'API au format d'affichage
+          const mapped = data.data
+            .filter(s => s.isActive !== false)
+            .sort((a, b) => (a.order || 0) - (b.order || 0))
+            .map((s, idx) => ({
+              id: s._id || idx,
+              icon: (s.category === 'lavage-vitres' ? Sparkles : (s.category === 'entretien-bureaux' ? Home : Building2)),
+              title: s.title,
+              subtitle: s.shortDescription || s.category,
+              description: s.description,
+              features: Array.isArray(s.features) ? s.features : [],
+              color: 'from-green-500 to-green-600',
+              bgColor: 'bg-green-50',
+              hoverColor: 'hover:border-green-200'
+            }))
+          setServices(mapped)
+        } else {
+          setServices(fallbackServices)
+        }
+      } catch (_e) {
+        setServices(fallbackServices)
+      }
+    }
+    load()
+  }, [fallbackServices])
 
   const containerVariants = {
     hidden: { opacity: 0 },

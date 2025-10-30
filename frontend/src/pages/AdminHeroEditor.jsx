@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Save, ArrowLeft, Image, Plus, Trash2, Eye } from 'lucide-react';
+import { API_URLS, getAuthHeaders } from '../config/api';
 
 const AdminHeroEditor = () => {
   const navigate = useNavigate();
@@ -27,8 +28,8 @@ const AdminHeroEditor = () => {
   const loadHeroData = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('http://localhost:5000/api/hero', {
-        headers: { 'Authorization': `Bearer ${token}` }
+      const response = await fetch('API_URLS.HERO', {
+          headers: getAuthHeaders()
       });
       
       if (response.ok) {
@@ -48,12 +49,9 @@ const AdminHeroEditor = () => {
 
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('http://localhost:5000/api/hero', {
+      const response = await fetch(API_URLS.HERO, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify(heroData)
       });
 

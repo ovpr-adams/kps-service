@@ -16,6 +16,7 @@ import {
   Edit,
   Plus
 } from 'lucide-react'
+import { API_URLS, getAuthHeaders } from '../config/api'
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview')
@@ -47,14 +48,14 @@ const AdminDashboard = () => {
       
       // Charger les statistiques
       const [quotesRes, contactsRes, servicesRes] = await Promise.all([
-        fetch('http://localhost:5000/api/quotes', {
-          headers: { 'Authorization': `Bearer ${token}` }
+        fetch(API_URLS.QUOTES, {
+          headers: getAuthHeaders()
         }),
-        fetch('http://localhost:5000/api/contacts', {
-          headers: { 'Authorization': `Bearer ${token}` }
+        fetch(API_URLS.CONTACTS, {
+          headers: getAuthHeaders()
         }),
-        fetch('http://localhost:5000/api/services', {
-          headers: { 'Authorization': `Bearer ${token}` }
+        fetch(API_URLS.SERVICES, {
+          headers: getAuthHeaders()
         })
       ])
 
@@ -555,8 +556,21 @@ const AdminDashboard = () => {
                     <Settings className="h-6 w-6 text-gray-600" />
                   </div>
                   <div className="text-left">
-                    <h3 className="font-semibold text-gray-900">Paramètres</h3>
-                    <p className="text-sm text-gray-600">Téléphone, horaires, zones</p>
+                    <h3 className="font-semibold text-gray-900">Paramètres du Site</h3>
+                    <p className="text-sm text-gray-600">Téléphone, horaires, zones, emails</p>
+                  </div>
+                </button>
+
+                <button
+                  onClick={() => navigate('/admin/stats')}
+                  className="flex items-center p-6 bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl hover:from-indigo-100 hover:to-indigo-200 transition-all duration-200 border border-indigo-200"
+                >
+                  <div className="p-3 bg-indigo-100 rounded-lg mr-4">
+                    <BarChart3 className="h-6 w-6 text-indigo-600" />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="font-semibold text-gray-900">Statistiques Globales</h3>
+                    <p className="text-sm text-gray-600">Graphiques et analyses des données</p>
                   </div>
                 </button>
 

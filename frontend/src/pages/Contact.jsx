@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle } from 'lucide-react'
 import Map from '../components/Map'
+import { API_URLS, getPublicHeaders } from '../config/api'
 import { useSettings } from '../context/SettingsContext'
 
 const Contact = () => {
@@ -30,11 +31,9 @@ const Contact = () => {
     setError('')
 
     try {
-      const response = await fetch('http://localhost:5000/api/contacts', {
+      const response = await fetch(API_URLS.CONTACTS, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: getPublicHeaders(),
         body: JSON.stringify(formData)
       })
 

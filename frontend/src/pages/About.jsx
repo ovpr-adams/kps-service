@@ -122,7 +122,7 @@ const About = () => {
                   <div className="flex-1">
                     <div className="bg-gradient-to-br from-primary/20 to-primary/5 rounded-2xl p-8 h-80 flex items-center justify-center">
                       <div className="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center">
-                        <Icon className="w-24 h-24 text-primary/40" />
+                        <IconComponent className="w-24 h-24 text-primary/40" />
                       </div>
                     </div>
                   </div>

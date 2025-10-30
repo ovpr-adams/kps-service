@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import logoUrl from '../assets/logo-alex.svg'
 
 const Logo = ({ className = "", showText = true, size = "default", variant = "default", showTagline = false }) => {
   const sizeClasses = {
@@ -34,7 +35,7 @@ const Logo = ({ className = "", showText = true, size = "default", variant = "de
         {/* Logo Icon - Formes géométriques KPS */}
         <div className={`${sizeClasses[size]} flex items-center justify-center mr-4 transition-all duration-300`}>
           <img 
-            src="/src/assets/logo-alex.svg" 
+            src={logoUrl} 
             alt="KPS Services Logo" 
             className="w-full h-full object-contain p-1"
             onError={(e) => {

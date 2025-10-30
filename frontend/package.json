@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "homepage": "https://ovpr-adams.github.io/",
+  "homepage": "https://ovpr-adams.github.io/kps-service/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

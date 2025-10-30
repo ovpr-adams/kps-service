@@ -31,7 +31,7 @@ function App() {
   }, [])
 
   return (
-    <Router>
+    <Router basename="/kps-service">
       <div className="min-h-screen bg-white flex flex-col font-sans antialiased">
         <div className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-green-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">
           <a href="#main-content" className="block underline hover:no-underline">Aller au contenu principal</a>

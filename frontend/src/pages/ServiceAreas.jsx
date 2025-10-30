@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import { MapPin, Navigation, Clock, Phone, Mail } from 'lucide-react'
 import DynamicMap from '../components/DynamicMap'
 import { useState, useEffect } from 'react'
@@ -200,18 +201,18 @@ const ServiceAreas = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="/quote"
+              <Link
+                to="/quote"
                 className="bg-white text-green-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-200"
               >
                 Demander un devis
-              </a>
-              <a
-                href="/contact"
+              </Link>
+              <Link
+                to="/contact"
                 className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-green-600 transition-colors duration-200"
               >
                 Nous contacter
-              </a>
+              </Link>
             </div>
 
             {settings && (

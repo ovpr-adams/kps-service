@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, Lock, Mail, Shield, AlertCircle } from 'lucide-react'
-import { API_URLS, getPublicHeaders } from '../config/api'
+import { useAdminAuth } from '../hooks/useAdminAuth'
 
 const AdminLogin = () => {
   const [formData, setFormData] = useState({
@@ -9,9 +9,16 @@ const AdminLogin = () => {
     password: ''
   })
   const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  const { login, isAuthenticated, isLoading } = useAdminAuth()
   const navigate = useNavigate()
+
+  // Rediriger si déjà connecté
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/admin/dashboard')
+    }
+  }, [isAuthenticated, navigate])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -25,32 +32,12 @@ const AdminLogin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setIsLoading(true)
     setError('')
 
-    try {
-      const response = await fetch(API_URLS.AUTH_LOGIN, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      })
-
-      const data = await response.json()
-
-      if (response.ok) {
-        // Stocker le token et rediriger
-        localStorage.setItem('adminToken', data.token)
-        localStorage.setItem('adminUser', JSON.stringify(data.user))
-        navigate('/admin/dashboard')
-      } else {
-        setError(data.message || 'Erreur de connexion')
-      }
-    } catch (error) {
-      setError('Erreur de connexion au serveur')
-    } finally {
-      setIsLoading(false)
+    const result = await login(formData.email, formData.password)
+    
+    if (!result.success) {
+      setError(result.error || 'Erreur de connexion')
     }
   }
 

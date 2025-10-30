@@ -7,19 +7,21 @@ import Services from './pages/Services'
 import References from './pages/References'
 import Quote from './pages/Quote'
 import Contact from './pages/Contact'
+import ServiceAreas from './pages/ServiceAreas'
 import Legal from './pages/Legal'
 import Privacy from './pages/Privacy'
 import Terms from './pages/Terms'
-import AdminLogin from './pages/AdminLogin'
-import AdminDashboard from './pages/AdminDashboard'
-import AdminPageEditor from './pages/AdminPageEditor'
-import AdminHeroEditor from './pages/AdminHeroEditor'
-import AdminEngagementsEditor from './pages/AdminEngagementsEditor'
-import AdminAboutEditor from './pages/AdminAboutEditor'
-import AdminServicesEditor from './pages/AdminServicesEditor'
-import AdminSettingsEditor from './pages/AdminSettingsEditor'
-import AdminStatsEditor from './pages/AdminStatsEditor'
-import ProtectedRoute from './components/ProtectedRoute'
+import AdminLogin from './admin/AdminLogin'
+import AdminDashboard from './admin/AdminDashboard'
+import AdminPageEditor from './admin/AdminPageEditor'
+import AdminHeroEditor from './admin/AdminHeroEditor'
+import AdminEngagementsEditor from './admin/AdminEngagementsEditor'
+import AdminAboutEditor from './admin/AdminAboutEditor'
+import AdminServicesEditor from './admin/AdminServicesEditor'
+import AdminSettingsEditor from './admin/AdminSettingsEditor'
+import AdminStatsEditor from './admin/AdminStatsEditor'
+import AdminLayout from './admin/AdminLayout'
+import AdminProtectedRoute from './components/AdminProtectedRoute'
 import Footer from './components/Footer'
 
 function App() {
@@ -40,55 +42,38 @@ function App() {
 
         <main id="main-content" role="main" className="flex-grow" tabIndex={-1}>
           <Routes>
+            {/* Routes publiques */}
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/services" element={<Services />} />
             <Route path="/references" element={<References />} />
             <Route path="/quote" element={<Quote />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/zones" element={<ServiceAreas />} />
             <Route path="/legal" element={<Legal />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
+            
+            {/* Route de connexion admin (publique) */}
             <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin/dashboard" element={
-              <ProtectedRoute>
-                <AdminDashboard />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/pages" element={
-              <ProtectedRoute>
-                <AdminPageEditor />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/hero" element={
-              <ProtectedRoute>
-                <AdminHeroEditor />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/engagements" element={
-              <ProtectedRoute>
-                <AdminEngagementsEditor />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/about" element={
-              <ProtectedRoute>
-                <AdminAboutEditor />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/services" element={
-              <ProtectedRoute>
-                <AdminServicesEditor />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/settings" element={
-              <ProtectedRoute>
-                <AdminSettingsEditor />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/stats" element={
-              <ProtectedRoute>
-                <AdminStatsEditor />
-              </ProtectedRoute>
+            
+            {/* Routes admin protégées avec layout */}
+            <Route path="/admin/*" element={
+              <AdminProtectedRoute>
+                <AdminLayout>
+                  <Routes>
+                    <Route path="dashboard" element={<AdminDashboard />} />
+                    <Route path="pages" element={<AdminPageEditor />} />
+                    <Route path="hero" element={<AdminHeroEditor />} />
+                    <Route path="engagements" element={<AdminEngagementsEditor />} />
+                    <Route path="about" element={<AdminAboutEditor />} />
+                    <Route path="services" element={<AdminServicesEditor />} />
+                    <Route path="settings" element={<AdminSettingsEditor />} />
+                    <Route path="stats" element={<AdminStatsEditor />} />
+                    <Route path="*" element={<AdminDashboard />} />
+                  </Routes>
+                </AdminLayout>
+              </AdminProtectedRoute>
             } />
           </Routes>
         </main>

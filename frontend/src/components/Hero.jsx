@@ -17,6 +17,7 @@ const Hero = () => {
     showQuote: true,
     services: []
   })
+  const [copied, setCopied] = useState(false)
 
   useEffect(() => {
     const loadHeroData = async () => {
@@ -43,6 +44,37 @@ const Hero = () => {
       Mail
     }
     return icons[iconName] || Building2
+  }
+
+  const buildShareUrl = () => {
+    const raw = heroData.videoLink || heroData.ctaLink || (typeof window !== 'undefined' ? window.location.href : '/')
+    if (!raw) return '/'
+    if (/^https?:\/\//i.test(raw)) return raw
+    const origin = typeof window !== 'undefined' ? window.location.origin : ''
+    return `${origin}${raw.startsWith('/') ? raw : `/${raw}`}`
+  }
+
+  const handleCopyLink = async () => {
+    try {
+      const url = buildShareUrl()
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(url)
+      } else {
+        const textarea = document.createElement('textarea')
+        textarea.value = url
+        textarea.setAttribute('readonly', '')
+        textarea.style.position = 'absolute'
+        textarea.style.left = '-9999px'
+        document.body.appendChild(textarea)
+        textarea.select()
+        document.execCommand('copy')
+        document.body.removeChild(textarea)
+      }
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch (e) {
+      console.error('Échec de la copie du lien:', e)
+    }
   }
   return (
     <section 
@@ -141,8 +173,12 @@ const Hero = () => {
                     <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
                       <span className="text-white font-bold text-lg">K</span>
                     </div>
-                    <button className="text-white text-sm hover:text-yellow-400">
-                      Copier le lien
+                    <button
+                      onClick={handleCopyLink}
+                      className="text-white text-sm hover:text-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 rounded px-2 py-1"
+                      aria-label="Copier le lien de partage"
+                    >
+                      {copied ? 'Lien copié !' : 'Copier le lien'}
                     </button>
                   </div>
                 </div>

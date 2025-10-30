@@ -56,6 +56,19 @@ export const login = asyncHandler(async (req, res) => {
     { expiresIn: process.env.JWT_EXPIRE || '30d' }
   )
 
+  // Configurer le cookie httpOnly sécurisé
+  const isProduction = process.env.NODE_ENV === 'production'
+  const cookieOptions = {
+    httpOnly: true,
+    secure: isProduction, // HTTPS en production
+    sameSite: 'strict',
+    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 jours en millisecondes
+    path: '/'
+  }
+
+  // Définir le cookie
+  res.cookie('adminToken', token, cookieOptions)
+
   // Retourner les informations utilisateur (sans le mot de passe)
   const userResponse = {
     _id: user._id,
@@ -69,7 +82,6 @@ export const login = asyncHandler(async (req, res) => {
   res.status(200).json({
     success: true,
     message: 'Connexion réussie',
-    token,
     user: userResponse
   })
 })
@@ -163,8 +175,14 @@ export const getProfile = asyncHandler(async (req, res) => {
 // @route   POST /api/auth/logout
 // @access  Private
 export const logout = asyncHandler(async (req, res) => {
-  // Pour JWT, la déconnexion se fait côté client
-  // Ici on peut ajouter une blacklist de tokens si nécessaire
+  // Supprimer le cookie httpOnly
+  res.clearCookie('adminToken', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    path: '/'
+  })
+
   res.status(200).json({
     success: true,
     message: 'Déconnexion réussie'

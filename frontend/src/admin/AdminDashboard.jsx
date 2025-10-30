@@ -17,6 +17,7 @@ import {
   Plus
 } from 'lucide-react'
 import { API_URLS, getAuthHeaders } from '../config/api'
+import { useAdminAuth } from '../hooks/useAdminAuth'
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview')
@@ -30,32 +31,29 @@ const AdminDashboard = () => {
   const [quotes, setQuotes] = useState([])
   const [contacts, setContacts] = useState([])
   const [services, setServices] = useState([])
+  const { user, logout } = useAdminAuth()
   const navigate = useNavigate()
 
-  // Vérifier l'authentification
+  // Charger les données du dashboard
   useEffect(() => {
-    const token = localStorage.getItem('adminToken')
-    if (!token) {
-      navigate('/admin/login')
-      return
-    }
     loadDashboardData()
-  }, [navigate])
+  }, [])
 
   const loadDashboardData = async () => {
     try {
-      const token = localStorage.getItem('adminToken')
-      
       // Charger les statistiques
       const [quotesRes, contactsRes, servicesRes] = await Promise.all([
         fetch(API_URLS.QUOTES, {
-          headers: getAuthHeaders()
+          headers: getAuthHeaders(),
+          credentials: 'include'
         }),
         fetch(API_URLS.CONTACTS, {
-          headers: getAuthHeaders()
+          headers: getAuthHeaders(),
+          credentials: 'include'
         }),
         fetch(API_URLS.SERVICES, {
-          headers: getAuthHeaders()
+          headers: getAuthHeaders(),
+          credentials: 'include'
         })
       ])
 
@@ -98,9 +96,7 @@ const AdminDashboard = () => {
   }
 
   const handleLogout = () => {
-    localStorage.removeItem('adminToken')
-    localStorage.removeItem('adminUser')
-    navigate('/admin/login')
+    logout()
   }
 
   const formatDate = (dateString) => {

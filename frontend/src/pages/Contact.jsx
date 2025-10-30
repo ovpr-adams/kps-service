@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle } from 'lucide-react'
-import Map from '../components/Map'
+import DynamicMap from '../components/DynamicMap'
 import { API_URLS, getPublicHeaders } from '../config/api'
 import { useSettings } from '../context/SettingsContext'
 
@@ -191,16 +191,10 @@ const Contact = () => {
                 </div>
               </div>
 
-              {/* Map Placeholder */}
+              {/* Map Interactive */}
               <div className="mt-12">
                 <h3 className="text-xl font-bold text-secondary mb-4">Nous trouver</h3>
-                <div className="bg-gray-200 rounded-lg h-64 flex items-center justify-center">
-                  <div className="text-center text-gray-500">
-                    <MapPin className="w-12 h-12 mx-auto mb-2" />
-                    <p>Carte Google Maps</p>
-                    <p className="text-sm">Intégration Google Maps API</p>
-                  </div>
-                </div>
+                <DynamicMap height="300px" />
               </div>
             </motion.div>
 
@@ -351,7 +345,7 @@ const Contact = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            <Map />
+            <DynamicMap height="500px" />
           </motion.div>
 
           <motion.div

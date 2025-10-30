@@ -34,10 +34,8 @@ export const getApiUrl = (endpoint) => {
 
 // Fonction utilitaire pour les requêtes avec authentification
 export const getAuthHeaders = () => {
-  const token = localStorage.getItem('adminToken')
   return {
-    ...API_CONFIG.DEFAULT_HEADERS,
-    ...(token && { 'Authorization': `Bearer ${token}` })
+    ...API_CONFIG.DEFAULT_HEADERS
   }
 }
 

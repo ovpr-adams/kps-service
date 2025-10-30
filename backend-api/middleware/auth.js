@@ -4,7 +4,13 @@ import User from '../models/User.js';
 // Middleware d'authentification
 export const authenticate = async (req, res, next) => {
   try {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
+    // Essayer de récupérer le token depuis les cookies (priorité)
+    let token = req.cookies?.adminToken;
+    
+    // Fallback sur l'Authorization header si pas de cookie
+    if (!token) {
+      token = req.header('Authorization')?.replace('Bearer ', '');
+    }
     
     if (!token) {
       return res.status(401).json({

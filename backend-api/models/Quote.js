@@ -44,7 +44,8 @@ const quoteSchema = new mongoose.Schema({
   },
   urgency: {
     type: String,
-    enum: ['faible', 'moyen', 'urgent']
+    enum: ['faible', 'moyen', 'urgent'],
+    default: 'moyen'
   },
 
   // Statut de la demande

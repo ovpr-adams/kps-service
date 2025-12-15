@@ -9,7 +9,11 @@ frontend/node_modules/
 .env.development.local
 .env.test.local
 .env.production.local
+.env.production
+.env.o2switch
+.env.production.CORRECTED
 backend-api/.env
+backend-api/.env.*
 
 # Logs
 logs

@@ -38,12 +38,15 @@ const heroSchema = new mongoose.Schema({
     default: "/quote"
   },
   
-  // Background
+  // Background - Support de plusieurs images superposées
+  backgroundImages: [{
+    type: String,
+    trim: true
+  }],
   backgroundImage: {
     type: String,
-    required: [true, 'L\'image de fond est requise'],
     trim: true,
-    default: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80"
+    default: "/hero-bg-1.jpg"
   },
   
   // Quote section

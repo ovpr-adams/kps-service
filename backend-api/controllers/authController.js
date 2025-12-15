@@ -61,21 +61,24 @@ export const login = asyncHandler(async (req, res) => {
   const cookieOptions = {
     httpOnly: true,
     secure: isProduction, // HTTPS en production
-    sameSite: 'strict',
+    sameSite: isProduction ? 'strict' : 'lax', // 'lax' pour développement local
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 jours en millisecondes
     path: '/'
   }
 
   // Définir le cookie
   res.cookie('adminToken', token, cookieOptions)
+  console.log('🍪 Cookie défini avec options:', cookieOptions)
+  console.log('🍪 Token généré:', token.substring(0, 20) + '...')
 
   // Retourner les informations utilisateur (sans le mot de passe)
   const userResponse = {
     _id: user._id,
+    name: user.name,
     email: user.email,
-    firstName: user.firstName,
-    lastName: user.lastName,
+    role: user.role,
     isAdmin: user.isAdmin,
+    isActive: user.isActive,
     createdAt: user.createdAt
   }
 
@@ -93,10 +96,10 @@ export const register = asyncHandler(async (req, res) => {
   const { email, password, firstName, lastName } = req.body
 
   // Validation des données
-  if (!email || !password || !firstName || !lastName) {
+  if (!email || !password) {
     return res.status(400).json({
       success: false,
-      message: 'Tous les champs sont requis'
+      message: 'Email et mot de passe sont requis'
     })
   }
 
@@ -118,8 +121,7 @@ export const register = asyncHandler(async (req, res) => {
   const user = await User.create({
     email,
     password: hashedPassword,
-    firstName,
-    lastName,
+    name: `${firstName} ${lastName}`.trim() || email.split('@')[0],
     isAdmin: false // Par défaut, pas admin
   })
 
@@ -137,10 +139,11 @@ export const register = asyncHandler(async (req, res) => {
   // Retourner les informations utilisateur (sans le mot de passe)
   const userResponse = {
     _id: user._id,
+    name: user.name,
     email: user.email,
-    firstName: user.firstName,
-    lastName: user.lastName,
+    role: user.role,
     isAdmin: user.isAdmin,
+    isActive: user.isActive,
     createdAt: user.createdAt
   }
 
@@ -156,9 +159,9 @@ export const register = asyncHandler(async (req, res) => {
 // @route   GET /api/auth/profile
 // @access  Private
 export const getProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user.userId).select('-password')
-  
-  if (!user) {
+  // req.user est déjà l'objet utilisateur complet (sans password) depuis le middleware authenticate
+  // Pas besoin de refaire une requête à la base de données
+  if (!req.user) {
     return res.status(404).json({
       success: false,
       message: 'Utilisateur non trouvé'
@@ -167,7 +170,7 @@ export const getProfile = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     success: true,
-    user
+    user: req.user
   })
 })
 
@@ -176,10 +179,11 @@ export const getProfile = asyncHandler(async (req, res) => {
 // @access  Private
 export const logout = asyncHandler(async (req, res) => {
   // Supprimer le cookie httpOnly
+  const isProduction = process.env.NODE_ENV === 'production'
   res.clearCookie('adminToken', {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    secure: isProduction,
+    sameSite: isProduction ? 'strict' : 'lax',
     path: '/'
   })
 

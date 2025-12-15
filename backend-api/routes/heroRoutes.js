@@ -19,7 +19,7 @@ router.get('/', asyncHandler(async (req, res) => {
       teamSize: "+35 professionnels qualifiés",
       ctaText: "OBTENEZ UN DEVIS GRATUIT",
       ctaLink: "/quote",
-      backgroundImage: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80",
+      backgroundImage: "/hero-bg-1.jpg",
       quoteTitle: "ET SI LA PUISSANCE D'UN FILM REMPLAÇAIT LA LONGUEUR D'UN DISCOURS ?",
       showQuote: true,
       services: [

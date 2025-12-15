@@ -1,7 +1,8 @@
 {
   "name": "kps-services-backend",
   "version": "1.0.0",
-  "description": "API Backend pour KPS Services - Plateforme de nettoyage professionnel",
+  "description": "Backend API pour KPS Services",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import logoUrl from '../assets/logo-alex.svg'
+import logoUrl from '../assets/logo-alex.jpg'
 
 const Logo = ({ className = "", showText = true, size = "default", variant = "default", showTagline = false }) => {
   const sizeClasses = {

@@ -1,8 +1,10 @@
 // Configuration centralisée de l'API
 const API_CONFIG = {
   // URL de base selon l'environnement
-  BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:5001',
-  
+  // En développement, utilise le proxy Vite (/api)
+  // En production, utilise VITE_API_URL ou l'URL complète
+  BASE_URL: import.meta.env.VITE_API_URL || (import.meta.env.DEV ? '' : 'https://kps-service.onrender.com'),
+
   // Endpoints
   ENDPOINTS: {
     AUTH: '/api/auth',
@@ -17,12 +19,12 @@ const API_CONFIG = {
     ABOUT_SECTIONS: '/api/about-sections',
     STATS: '/api/stats'
   },
-  
+
   // Configuration des requêtes
   DEFAULT_HEADERS: {
     'Content-Type': 'application/json',
   },
-  
+
   // Timeout des requêtes
   TIMEOUT: 10000
 }
@@ -47,7 +49,9 @@ export const getPublicHeaders = () => {
 // URLs complètes pour faciliter l'utilisation
 export const API_URLS = {
   AUTH_LOGIN: getApiUrl(API_CONFIG.ENDPOINTS.AUTH + '/login'),
+  AUTH_LOGOUT: getApiUrl(API_CONFIG.ENDPOINTS.AUTH + '/logout'),
   AUTH_PROFILE: getApiUrl(API_CONFIG.ENDPOINTS.AUTH + '/profile'),
+  AUTH_VERIFY: getApiUrl(API_CONFIG.ENDPOINTS.AUTH + '/verify'),
   QUOTES: getApiUrl(API_CONFIG.ENDPOINTS.QUOTES),
   CONTACTS: getApiUrl(API_CONFIG.ENDPOINTS.CONTACTS),
   SERVICES: getApiUrl(API_CONFIG.ENDPOINTS.SERVICES),

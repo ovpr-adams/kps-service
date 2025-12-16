@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { Building2, Sparkles, Phone, Mail } from 'lucide-react'
+import { Building2, Sparkles, Phone, Mail, Play } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { API_URLS, getPublicHeaders } from '../config/api'
 
@@ -12,7 +12,8 @@ const Hero = () => {
     teamSize: "+35 professionnels qualifiés",
     ctaText: "OBTENEZ UN DEVIS GRATUIT",
     ctaLink: "/quote",
-    backgroundImage: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80",
+    backgroundImage: "/hero-bg-1.jpg",
+    backgroundImages: ['/hero-bg-1.jpg', '/hero-bg-2.jpg', '/hero-bg-3.jpg'],
     quoteTitle: "ET SI LA PUISSANCE D'UN FILM REMPLAÇAIT LA LONGUEUR D'UN DISCOURS ?",
     showQuote: true,
     services: []
@@ -27,7 +28,12 @@ const Hero = () => {
         })
         const data = await response.json()
         if (response.ok && data.data) {
-          setHeroData(data.data)
+          // Remplacer l'URL Unsplash par l'image locale si nécessaire
+          const heroDataFromBackend = { ...data.data }
+          if (heroDataFromBackend.backgroundImage && heroDataFromBackend.backgroundImage.includes('unsplash')) {
+            heroDataFromBackend.backgroundImage = '/hero-bg-1.jpg'
+          }
+          setHeroData(heroDataFromBackend)
         }
       } catch (error) {
         console.error('Erreur lors du chargement des données Hero:', error)
@@ -76,11 +82,14 @@ const Hero = () => {
       console.error('Échec de la copie du lien:', e)
     }
   }
+  // Image de fond en haut de la page d'accueil
+  const backgroundImage = heroData.backgroundImage || '/hero-bg-1.jpg'
+
   return (
-    <section 
-      className="relative min-h-screen flex items-center justify-center"
+    <section
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
       style={{
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${heroData.backgroundImage}')`,
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${backgroundImage}')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'
@@ -97,7 +106,7 @@ const Hero = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1 
+            <h1
               className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-white"
               id="hero-heading"
             >
@@ -155,36 +164,36 @@ const Hero = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              <div className="relative">
-                {/* Decorative quote */}
-                <div className="bg-gray-900 bg-opacity-80 backdrop-blur-sm rounded-lg p-8 max-w-lg">
-                  <h3 className="text-2xl font-bold text-white mb-4 text-center">
-                    {heroData.quoteTitle}
-                  </h3>
-                
-                {/* Video preview mockup */}
-                <div className="bg-gray-800 rounded-lg p-4 space-y-4">
-                  <div className="flex space-x-4">
-                    <div className="w-24 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded"></div>
-                    <div className="w-32 h-16 bg-gradient-to-br from-green-400 to-teal-500 rounded"></div>
-                  </div>
-                  
-                  <div className="flex justify-between items-center">
-                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                      <span className="text-white font-bold text-lg">K</span>
+              <div className="relative w-full max-w-lg">
+                <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/20 group cursor-pointer bg-gray-900">
+                  {/* Image de fond "Contexte Industriel" - Fallback sûr si l'image n'existe pas */}
+                  <div className="absolute inset-0 bg-gray-800"></div>
+                  <img
+                    src="/hero-bg-3.jpg"
+                    alt="KPS Intervention"
+                    className="w-full h-80 object-cover transform group-hover:scale-105 transition-transform duration-700 opacity-80"
+                  />
+
+                  {/* Overlay Sombre pour contraste MAXIMAL */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent opacity-80 group-hover:opacity-70 transition-opacity"></div>
+
+                  {/* Contenu Central : Bouton Play */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10">
+                    <div className="w-20 h-20 bg-yellow-500 rounded-full flex items-center justify-center pl-2 shadow-[0_0_30px_rgba(234,179,8,0.4)] group-hover:scale-110 transition-transform duration-300 mb-6 relative">
+                      <div className="absolute inset-0 bg-yellow-400 rounded-full animate-ping opacity-20"></div>
+                      <Play className="w-8 h-8 text-gray-900 fill-current" />
                     </div>
-                    <button
-                      onClick={handleCopyLink}
-                      className="text-white text-sm hover:text-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 rounded px-2 py-1"
-                      aria-label="Copier le lien de partage"
-                    >
-                      {copied ? 'Lien copié !' : 'Copier le lien'}
-                    </button>
+
+                    <h3 className="text-2xl font-bold text-white mb-2 drop-shadow-md">
+                      L'Expertise KPS en Action
+                    </h3>
+                    <p className="text-gray-200 text-sm font-medium tracking-wide bg-black/30 px-4 py-1 rounded-full backdrop-blur-sm">
+                      Voir nos méthodes d'intervention • 1:30
+                    </p>
                   </div>
                 </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
           )}
         </div>
       </div>

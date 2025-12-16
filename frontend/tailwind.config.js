@@ -14,6 +14,7 @@ export default {
           300: '#FFE59E',
           400: '#FFD66B',
           500: '#FFD700', // Or principal
+          DEFAULT: '#FFD700', // Ajout pour permettre 'bg-primary'
           600: '#E6C200',
           700: '#CC9E00',
           800: '#B37F00',

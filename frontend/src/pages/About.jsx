@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Users, Award, Target, Heart } from 'lucide-react'
+import { Users, Award, Target, Heart, CheckCircle2, TrendingUp, ShieldCheck } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { API_URLS, getPublicHeaders } from '../config/api'
 
@@ -17,174 +17,168 @@ const About = () => {
           setSections(data.data)
         }
       } catch (error) {
-        console.error('Erreur lors du chargement des sections About:', error)
-        // Fallback aux sections par défaut
-        setSections([
-          {
-            _id: 'histoire',
-            sectionId: 'histoire',
-            title: 'Notre Histoire',
-            icon: 'Award',
-            content: 'Fondée en 2002, KPS Services est née de la passion de ses fondateurs pour l\'excellence dans le domaine du nettoyage professionnel. Ce qui a commencé comme une petite entreprise familiale est aujourd\'hui une référence dans le secteur, avec plus de 500 clients satisfaits à travers la région parisienne.',
-            stats: '22+ années d\'expérience'
-          },
-          {
-            _id: 'equipe',
-            sectionId: 'equipe',
-            title: 'Notre Équipe',
-            icon: 'Users',
-            content: 'Notre équipe est composée de professionnels expérimentés, formés aux dernières techniques de nettoyage et aux normes de sécurité les plus strictes. Chaque membre partage notre engagement pour la qualité et la satisfaction client.',
-            stats: '+35 professionnels qualifiés'
-          },
-          {
-            _id: 'valeurs',
-            sectionId: 'valeurs',
-            title: 'Nos Valeurs',
-            icon: 'Heart',
-            content: 'L\'intégrité, le respect et l\'excellence guident chacune de nos actions. Nous croyons en des relations durables avec nos clients et nos partenaires, fondées sur la confiance mutuelle et le professionnalisme.',
-            stats: '100% satisfaction client'
-          }
-        ])
+        // Fallback silently if API fails, using default hardcoded sections below if state is empty
+        console.warn('Using default sections due to API error')
       }
     }
     loadSections()
   }, [])
 
-  const getIconComponent = (iconName) => {
-    const icons = {
-      Award,
-      Users,
-      Heart,
-      Target
+  // Default content if API is empty or fails
+  const defaultSections = [
+    {
+      _id: 'histoire',
+      title: 'Notre Héritage',
+      icon: 'Award',
+      content: 'Fondée en 2002, KPS Services est née d\'une ambition simple : redefinir les standards de la propreté industrielle. Ce qui a commencé comme une entreprise familiale est aujourd\'hui une référence technique en Île-de-France.',
+      stats: '20+ Ans d\'Excellence'
+    },
+    {
+      _id: 'equipe',
+      title: 'L\'Élite Technique',
+      icon: 'Users',
+      content: 'Plus qu\'une équipe de nettoyage, nous formons des techniciens experts. Chaque intervenant est qualifié pour opérer dans des environnements sensibles (Seveso, IGH, Zones stériles).',
+      stats: '35+ Experts Qualifiés'
+    },
+    {
+      _id: 'valeurs',
+      title: 'Nos Piliers',
+      icon: 'ShieldCheck',
+      content: 'Rigueur absolue, transparence totale et innovation constante. Nous ne vendons pas seulement du temps de nettoyage, nous vendons de la sérénité opérationnelle.',
+      stats: '100% Engagement'
     }
+  ]
+
+  const displaySections = sections.length > 0 ? sections : defaultSections
+
+  const getIconComponent = (iconName) => {
+    const icons = { Award, Users, Heart, Target, TrendingUp, ShieldCheck }
     return icons[iconName] || Award
   }
 
   return (
-    <div className="pt-16">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-primary/10 to-primary/5 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white">
+
+      {/* Hero Section Premium Dark */}
+      <section className="relative pt-40 pb-24 bg-gray-900 overflow-hidden">
+        {/* Abstract Background */}
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-900 to-gray-900/50"></div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
-            className="text-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h1 className="text-4xl sm:text-5xl font-bold text-secondary mb-6">
-              À Propos de KPS Services
-            </h1>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Découvrez l'histoire, l'équipe et les valeurs qui font de KPS Services
-              votre partenaire de confiance pour tous vos besoins de nettoyage professionnel.
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Main Content */}
-      <section className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {sections.map((section, index) => {
-            const IconComponent = getIconComponent(section.icon)
-            return (
-              <motion.div
-                key={section._id || section.id}
-                className={`mb-20 ${index % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                viewport={{ once: true }}
-              >
-                <div className={`flex flex-col ${index % 2 === 1 ? 'lg:flex-row-reverse' : 'lg:flex-row'} items-center gap-12`}>
-                  {/* Content */}
-                  <div className="flex-1">
-                    <div className="flex items-center mb-6">
-                      <div className="w-16 h-16 bg-primary/10 rounded-lg flex items-center justify-center mr-4">
-                        <IconComponent className="w-8 h-8 text-primary" />
-                      </div>
-                      <div>
-                        <h2 className="text-2xl font-bold text-secondary">
-                          {section.title}
-                        </h2>
-                        <p className="text-primary font-semibold">
-                          {section.stats}
-                        </p>
-                      </div>
-                    </div>
-
-                    <p className="text-gray-600 leading-relaxed text-lg">
-                      {section.content}
-                    </p>
-                  </div>
-
-                  {/* Image */}
-                  <div className="flex-1">
-                    <div className="bg-gradient-to-br from-primary/20 to-primary/5 rounded-2xl p-8 h-80 flex items-center justify-center">
-                      <div className="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center">
-                        <IconComponent className="w-24 h-24 text-primary/40" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )
-          })}
-        </div>
-      </section>
-
-      {/* Mission Section */}
-      <section className="bg-gray-50 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            className="text-center mb-16"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-3xl sm:text-4xl font-bold text-secondary mb-6">
-              Notre Mission
-            </h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Contribuer à des environnements de travail plus sains et plus productifs
-              en offrant des services de nettoyage d'excellence.
-            </p>
-          </motion.div>
-
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-3 gap-8"
             initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <span className="text-yellow-500 font-bold tracking-[0.2em] uppercase text-sm mb-4 block">
+              Notre ADN
+            </span>
+            <h1 className="text-5xl md:text-6xl font-bold text-white mb-8">
+              L'Excellence comme <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">Standard</span>
+            </h1>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed font-light">
+              Derrière chaque intervention KPS Services, il y a une vision :
+              celle de transformer la propreté en un levier de performance pour votre entreprise.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Main Vision Grid */}
+      <section className="py-24 bg-gray-50 relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {displaySections.map((section, index) => {
+              const IconComponent = getIconComponent(section.icon)
+              return (
+                <motion.div
+                  key={index}
+                  className="bg-white rounded-2xl p-8 shadow-xl border border-gray-100 hover:border-yellow-400/30 transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 group"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                >
+                  <div className="w-14 h-14 bg-green-50 rounded-xl flex items-center justify-center mb-6 group-hover:bg-green-100 transition-colors">
+                    <IconComponent className="w-7 h-7 text-green-700" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2 group-hover:text-green-800 transition-colors">
+                    {section.title}
+                  </h2>
+                  <p className="text-yellow-600 font-bold text-sm mb-4 uppercase tracking-wider">
+                    {section.stats}
+                  </p>
+                  <p className="text-gray-600 leading-relaxed">
+                    {section.content}
+                  </p>
+                </motion.div>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Mission & Horizon Section */}
+      <section className="py-24 bg-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 text-center mb-16">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            <div className="text-center">
-              <Target className="w-16 h-16 text-primary mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-secondary mb-3">Vision</h3>
-              <p className="text-gray-600">
-                Devenir la référence du nettoyage professionnel en Île-de-France
-                en maintenant les plus hauts standards de qualité.
-              </p>
-            </div>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Notre Mission</h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-green-500 to-yellow-400 mx-auto rounded-full"></div>
+          </motion.div>
+        </div>
 
-            <div className="text-center">
-              <Heart className="w-16 h-16 text-primary mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-secondary mb-3">Engagement</h3>
-              <p className="text-gray-600">
-                Respecter nos engagements envers nos clients, nos employés
-                et l'environnement dans chacune de nos actions.
-              </p>
-            </div>
+        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
 
-            <div className="text-center">
-              <Award className="w-16 h-16 text-primary mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-secondary mb-3">Innovation</h3>
-              <p className="text-gray-600">
-                Intégrer les dernières technologies et méthodes
-                pour améliorer continuellement nos services.
-              </p>
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7 }}
+            viewport={{ once: true }}
+            className="relative"
+          >
+            <div className="absolute inset-0 bg-gradient-to-tr from-green-600 to-green-400 rounded-3xl transform rotate-3 opacity-20"></div>
+            <img
+              src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1632&q=80"
+              alt="Réunion équipe KPS"
+              className="relative rounded-3xl shadow-2xl grayscale-[20%] hover:grayscale-0 transition-all duration-700"
+            />
+            <div className="absolute -bottom-6 -right-6 bg-white p-6 rounded-xl shadow-xl border border-gray-100 hidden md:block">
+              <p className="text-4xl font-bold text-green-600 mb-1">100%</p>
+              <p className="text-sm text-gray-500 font-semibold uppercase">Engagement Qualité</p>
             </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7 }}
+            viewport={{ once: true }}
+          >
+            <h3 className="text-3xl font-bold text-gray-900 mb-6">
+              Façonner les environnements de demain
+            </h3>
+            <p className="text-gray-600 text-lg mb-8 leading-relaxed">
+              Nous ne nous contentons pas de nettoyer. Nous assurons la pérennité de vos installations et la santé de vos collaborateurs.
+              L'innovation est au cœur de notre stratégie : produits écologiques, machines autonomes et traçabilité numérique.
+            </p>
+
+            <ul className="space-y-4">
+              {[
+                "Respect rigoureux des normes environnementales",
+                "Formation continue de nos équipes techniques",
+                "Partenariat long terme avec nos clients"
+              ].map((item, idx) => (
+                <li key={idx} className="flex items-center text-gray-700 font-medium">
+                  <CheckCircle2 className="w-5 h-5 text-yellow-500 mr-3 flex-shrink-0" />
+                  {item}
+                </li>
+              ))}
+            </ul>
           </motion.div>
         </div>
       </section>

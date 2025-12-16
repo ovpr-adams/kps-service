@@ -15,30 +15,22 @@ export const useAdminAuth = () => {
 
   const checkAuthStatus = useCallback(async () => {
     try {
-      const token = getCookie('adminToken')
-      if (!token) {
-        setIsAuthenticated(false)
-        setIsLoading(false)
-        return
-      }
-
       // Vérifier la validité du token avec le backend
+      // Le cookie httpOnly est envoyé automatiquement avec credentials: 'include'
       const response = await fetch(API_URLS.AUTH_PROFILE, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         credentials: 'include'
       })
 
       if (response.ok) {
         const userData = await response.json()
-        setUser(userData.data || userData)
+        setUser(userData.user || userData.data || userData)
         setIsAuthenticated(true)
       } else {
-        // Token invalide, supprimer le cookie
-        deleteCookie('adminToken')
+        // Token invalide ou expiré
         setIsAuthenticated(false)
         setUser(null)
       }
@@ -63,45 +55,49 @@ export const useAdminAuth = () => {
         body: JSON.stringify({ email, password })
       })
 
-      if (response.ok) {
-        const data = await response.json()
-        const token = data.token || data.data?.token
+      // Lire la réponse une seule fois
+      const data = await response.json()
+
+      if (response.ok && data.success) {
+        // Le token est automatiquement dans le cookie httpOnly (géré par le backend)
+        // On n'a pas besoin de le stocker manuellement côté client
         
-        if (token) {
-          // Stocker le token dans un cookie httpOnly sécurisé
-          setCookie('adminToken', token, {
-            httpOnly: true,
-            secure: window.location.protocol === 'https:',
-            sameSite: 'strict',
-            maxAge: 30 * 24 * 60 * 60 // 30 jours
-          })
-          
-          setUser(data.user || data.data?.user)
-          setIsAuthenticated(true)
-          return { success: true, user: data.user || data.data?.user }
-        }
+        // Mettre à jour l'état utilisateur
+        setUser(data.user || data.data?.user)
+        setIsAuthenticated(true)
+        return { success: true, user: data.user || data.data?.user }
+      } else {
+        // Erreur de connexion
+        return { success: false, error: data.message || 'Erreur de connexion' }
       }
-      
-      const errorData = await response.json()
-      return { success: false, error: errorData.message || 'Erreur de connexion' }
     } catch (error) {
       console.error('Erreur de connexion:', error)
-      return { success: false, error: 'Erreur de connexion' }
+      return { success: false, error: 'Erreur de connexion. Veuillez réessayer.' }
     } finally {
       setIsLoading(false)
     }
   }
 
-  const logout = useCallback(() => {
-    // Supprimer le cookie
-    deleteCookie('adminToken')
-    
-    // Nettoyer l'état local
-    setIsAuthenticated(false)
-    setUser(null)
-    
-    // Rediriger vers la page de connexion
-    navigate('/admin/login')
+  const logout = useCallback(async () => {
+    try {
+      // Appeler l'endpoint backend pour supprimer le cookie httpOnly
+      await fetch(API_URLS.AUTH_LOGOUT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+      })
+    } catch (error) {
+      console.error('Erreur lors de la déconnexion:', error)
+    } finally {
+      // Nettoyer l'état local dans tous les cas
+      setIsAuthenticated(false)
+      setUser(null)
+      
+      // Rediriger vers la page de connexion
+      navigate('/admin/login')
+    }
   }, [navigate])
 
   const requireAuth = useCallback(() => {

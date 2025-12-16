@@ -33,28 +33,44 @@ const Legal = () => {
           >
             <div className="prose max-w-none">
               <h2 className="text-2xl font-bold text-secondary mb-6">Éditeur du site</h2>
-              <p className="text-gray-600 mb-4">
-                <strong>Raison sociale :</strong> KPS Services<br />
-                <strong>Forme juridique :</strong> SARL<br />
-                <strong>Capital social :</strong> 50 000 €<br />
-                <strong>Siège social :</strong> 123 Avenue de la Propreté, 75001 Paris<br />
-                <strong>Numéro SIRET :</strong> XXX XXX XXX XXXXX<br />
-                <strong>Numéro TVA intracommunautaire :</strong> FR XX XXX XXX XXX<br />
-                <strong>Téléphone :</strong> 01 23 45 67 89<br />
-                <strong>Email :</strong> contact@kps-services.fr
+              <div className="text-gray-600 mb-8 space-y-2">
+                <p><strong>Raison sociale :</strong> KPS SERVICES</p>
+                <p><strong>Forme juridique :</strong> EURL (Entreprise Unipersonnelle à Responsabilité Limitée)</p>
+                <p><strong>Capital social :</strong> 2 000,00 €</p>
+                <p><strong>Activité :</strong> Nettoyage courant des bâtiments</p>
+                <p><strong>RCS :</strong> 918 371 089 R.C.S. Meaux</p>
+                <p><strong>SIREN :</strong> 918 371 089</p>
+                <p><strong>SIRET (siège) :</strong> 918 371 089 00015</p>
+                <p><strong>Numéro de TVA intracommunautaire :</strong> FR66918371089</p>
+                <p><strong>Date de création :</strong> 11/07/2022</p>
+              </div>
+
+              <h3 className="text-xl font-bold text-secondary mb-4">Siège Social</h3>
+              <p className="text-gray-600 mb-8">
+                18 ALLÉE DU BOIS MOUSSU<br />
+                77420 CHAMPS-SUR-MARNE<br />
+                France
+              </p>
+
+              <h3 className="text-xl font-bold text-secondary mb-4">Contact</h3>
+              <p className="text-gray-600 mb-8">
+                <strong>Téléphone :</strong> <a href="tel:+33185091951" className="hover:text-primary transition-colors">01 85 09 19 51</a><br />
+                <strong>Email :</strong> <a href="mailto:Contact@kpsservices.fr" className="hover:text-primary transition-colors">Contact@kpsservices.fr</a>
               </p>
 
               <h2 className="text-2xl font-bold text-secondary mb-6 mt-10">Directeur de publication</h2>
               <p className="text-gray-600 mb-4">
-                [Nom du directeur de publication]
+                La direction de KPS SERVICES.
               </p>
 
               <h2 className="text-2xl font-bold text-secondary mb-6 mt-10">Hébergement</h2>
               <p className="text-gray-600 mb-4">
                 Ce site est hébergé par :<br />
-                [Nom de l'hébergeur]<br />
-                [Adresse de l'hébergeur]<br />
-                Téléphone : [Téléphone de l'hébergeur]
+                <strong>o2switch</strong><br />
+                Chemin des Pardiaux<br />
+                63000 Clermont-Ferrand<br />
+                France<br />
+                Téléphone : 04 44 44 60 40
               </p>
 
               <h2 className="text-2xl font-bold text-secondary mb-6 mt-10">Propriété intellectuelle</h2>

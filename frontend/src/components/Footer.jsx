@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
-import { Phone, Mail, MapPin, Clock, Facebook, Linkedin, Twitter } from 'lucide-react'
+import { Phone, Mail, MapPin, Clock, Facebook, Youtube } from 'lucide-react'
+import { SiTiktok } from 'react-icons/si'
 import Logo from './Logo'
 import { useSettings } from '../context/SettingsContext'
 
@@ -29,13 +30,14 @@ const Footer = () => {
     { name: 'Mentions légales', href: '/legal' },
     { name: 'Politique de confidentialité', href: '/privacy' },
     { name: 'Conditions générales', href: '/terms' },
-    { name: 'Plan du site', href: '/sitemap' }
+    { name: 'Plan du site', href: '/sitemap' },
+    { name: 'Gérer les cookies', href: '/privacy#cookies' }
   ]
 
   const socialLinks = [
-    { name: 'Facebook', icon: Facebook, href: 'https://facebook.com/kpsservices' },
-    { name: 'LinkedIn', icon: Linkedin, href: 'https://linkedin.com/company/kps-services' },
-    { name: 'Twitter', icon: Twitter, href: 'https://twitter.com/kpsservices' }
+    { name: 'Facebook', icon: Facebook, href: 'https://www.facebook.com/people/KPS-Services-Nettoyage-Professionnel/61584901271784/' },
+    { name: 'YouTube', icon: Youtube, href: 'https://www.youtube.com/@KPSServicesNettoyageProfession' },
+    { name: 'TikTok', icon: SiTiktok, href: 'https://www.tiktok.com/@kpsservices' }
   ]
 
   return (
@@ -45,10 +47,10 @@ const Footer = () => {
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
           <defs>
             <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-              <path d="M 10 0 L 0 0 0 10" fill="none" stroke="currentColor" strokeWidth="0.5"/>
+              <path d="M 10 0 L 0 0 0 10" fill="none" stroke="currentColor" strokeWidth="0.5" />
             </pattern>
           </defs>
-          <rect width="100" height="100" fill="url(#grid)"/>
+          <rect width="100" height="100" fill="url(#grid)" />
         </svg>
       </div>
 
@@ -77,7 +79,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center space-x-3 text-gray-300">
                 <MapPin size={20} className="text-green-400 flex-shrink-0" />
-                <span className="font-medium">{(settings?.serviceAreas || ['Île-de-France','Nantes','Rouen']).join(', ')}</span>
+                <span className="font-medium">{(settings?.serviceAreas || ['Île-de-France', 'Nantes', 'Rouen']).join(', ')}</span>
               </div>
               <div className="flex items-center space-x-3 text-gray-300">
                 <Clock size={20} className="text-green-400 flex-shrink-0" />
@@ -148,8 +150,20 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t border-gray-800 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
-            <div className="text-gray-400 text-sm">
-              © {currentYear} KPS Services. Tous droits réservés.
+            <div className="text-gray-400 text-sm flex flex-col md:flex-row items-center gap-2">
+              <span>© {currentYear} KPS Services. Tous droits réservés.</span>
+              <span className="hidden md:inline">•</span>
+              <span>
+                Créé par{' '}
+                <a
+                  href="https://presentation.chapechaperesidence.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-green-400 transition-colors"
+                >
+                  ChapeChapeResidence
+                </a>
+              </span>
             </div>
 
             {/* Legal Links */}

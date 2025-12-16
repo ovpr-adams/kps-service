@@ -33,8 +33,28 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false,
   contentSecurityPolicy: false
 })); // Sécurité des headers HTTP (configuré pour permettre les cookies)
+
+// CORS - Autoriser le frontend en production ET en développement
+const allowedOrigins = [
+  'https://www.kpsservices.fr',          // Production o2switch
+  'https://kpsservices.fr',              // Production sans www
+  'http://localhost:5173',               // Dev local
+  'http://localhost:5174',               // Dev local alternative
+  process.env.FRONTEND_URL               // Variable d'environnement
+].filter(Boolean);
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: function (origin, callback) {
+    // Autoriser requêtes sans origin (Postman, mobile apps, etc.)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.warn('⚠️ CORS bloqué pour:', origin);
+      callback(new Error('Non autorisé par CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -46,17 +66,17 @@ app.use(morgan('dev')); // Logging des requêtes
 
 // Connexion à MongoDB
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/kps-services')
-.then(() => {
-  console.log('✅ Connecté à MongoDB');
-})
-.catch((error) => {
-  console.error('❌ Erreur de connexion à MongoDB:', error.message);
-  process.exit(1);
-});
+  .then(() => {
+    console.log('✅ Connecté à MongoDB');
+  })
+  .catch((error) => {
+    console.error('❌ Erreur de connexion à MongoDB:', error.message);
+    process.exit(1);
+  });
 
 // Routes
 app.get('/', (req, res) => {
-  res.json({ 
+  res.json({
     message: 'Bienvenue sur l\'API KPS Services',
     version: '1.0.0',
     endpoints: {
@@ -89,9 +109,9 @@ app.use('/api/stats', statsRoutes);
 
 // Gestion des erreurs 404
 app.use((req, res) => {
-  res.status(404).json({ 
+  res.status(404).json({
     error: 'Route non trouvée',
-    path: req.path 
+    path: req.path
   });
 });
 

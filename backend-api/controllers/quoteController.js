@@ -2,7 +2,7 @@ import Quote from '../models/Quote.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { sendSuccess, sendError, sendCreated, sendNotFound } from '../utils/responseHelpers.js';
 import { getPaginationParams, sendPaginatedResponse } from '../utils/paginationHelpers.js';
-import { sendQuoteConfirmationEmail, sendQuoteNotificationEmail } from '../utils/emailService.js';
+import { sendQuoteConfirmationEmail, sendQuoteNotificationEmail } from '../utils/emailServiceResend.js';
 
 // Créer une nouvelle demande de devis
 export const createQuote = asyncHandler(async (req, res) => {

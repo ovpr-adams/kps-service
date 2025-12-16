@@ -2,7 +2,7 @@ import Contact from '../models/Contact.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { sendSuccess, sendError, sendCreated, sendNotFound } from '../utils/responseHelpers.js';
 import { getPaginationParams, sendPaginatedResponse } from '../utils/paginationHelpers.js';
-import { sendContactEmail } from '../utils/emailService.js';
+import { sendContactEmail } from '../utils/emailServiceResend.js';
 
 // Créer un nouveau message de contact
 export const createContact = asyncHandler(async (req, res) => {
